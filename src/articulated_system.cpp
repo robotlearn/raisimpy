@@ -35,6 +35,56 @@ using namespace raisim;
 
 void init_articulated_system(py::module &m) {
 
-    // articulated system
+
+    /****************/
+    /* LoadFromMJCF */
+    /****************/
+//    py::class_<raisim::mjcf::LoadFromMJCF>(m, "LoadFromMJCF", "Load from MJCF file.");
+
+
+    /*****************/
+    /* LoadFromURDF2 */
+    /*****************/
+//    py::class_<raisim::urdf::LoadFromURDF2>(m, "LoadFromURDF2", "Load from URDF file.");
+
+
+    /***************/
+    /* ControlMode */
+    /***************/
+    py::enum_<raisim::ControlMode::Type>(m, "Type", py::arithmetic())
+	    .value("FORCE_AND_TORQUE", raisim::ControlMode::Type::FORCE_AND_TORQUE)
+	    .value("PD_PLUS_FEEDFORWARD_TORQUE", raisim::ControlMode::Type::PD_PLUS_FEEDFORWARD_TORQUE)
+	    .value("VELOCITY_PLUS_FEEDFORWARD_TORQUE", raisim::ControlMode::Type::VELOCITY_PLUS_FEEDFORWARD_TORQUE);
+
+
+    /***************************/
+    /* ArticulatedSystemOption */
+    /***************************/
+    py::class_<raisim::ArticulatedSystemOption>(m, "ArticulatedSystemOption", "Articulated System Option.")
+        .def_readwrite("do_not_collide_with_parent", &raisim::ArticulatedSystemOption::doNotCollideWithParent);
+
+
+    /*********************/
+    /* ArticulatedSystem */
+    /*********************/
+    py::class_<raisim::ArticulatedSystem, raisim::Object> system(m, "ArticulatedSystem", "Raisim Articulated System.");
+
+    system.def(py::init<>(), "Initialize the Articulated System.")
+          .def(py::init<const std::string &, const std::string &, std::vector<std::string>, raisim::ArticulatedSystemOption>(),
+            "Initialize the Articulated System." )  // TODO: finish the doc
+          .def("get_generalized_coordinate", [](raisim::ArticulatedSystem &self) {
+            return ;
+          })
+          .def("update_kinematics", &raisim::ArticulatedSystem::updateKinematics,  R"mydelimiter(
+          unnecessary to call this function if you are simulating your system. `integrate1` calls this function Call
+          this function if you want to get kinematic properties but you don't want to integrate.
+          )mydelimiter")
+    ;
+
+    py::enum_<raisim::ArticulatedSystem::Frame>(system, "Frame")
+        .value("WORLD_FRAME", raisim::ArticulatedSystem::Frame::WORLD_FRAME)
+        .value("PARENT_FRAME", raisim::ArticulatedSystem::Frame::PARENT_FRAME)
+        .value("BODY_FRAME", raisim::ArticulatedSystem::Frame::BODY_FRAME);
+
 
 }

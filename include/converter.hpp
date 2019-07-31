@@ -29,7 +29,7 @@
 #include <pybind11/numpy.h>   // numpy types
 
 #include <sstream>   // for ostringstream
-#include "raisim/math.hpp"   // contains the definitions of Vec, Mat, etc.
+#include "raisim/math.hpp"   // contains the definitions of Vec, Mat, VecDyn, MatDyn, etc.
 
 namespace py = pybind11;
 
@@ -46,6 +46,7 @@ py::array_t<double> convert_vec_to_np(const raisim::Vec<n> &vec) {
         ptr);               // data pointer
 //        vec);   // numpy array references this parent
 }
+
 
 /// \brief: convert from np.array[float[n]] to raisim::Vec<n>
 template<size_t n>
@@ -75,6 +76,7 @@ raisim::Vec<n> convert_np_to_vec(py::array_t<double> array) {
     return vec;
 }
 
+
 /// \brief: convert from raisim::Mat<n,m> to np.array[float64[n,m]]
 template<size_t n, size_t m>
 py::array_t<double> convert_mat_to_np(const raisim::Mat<n, m> &mat) {
@@ -88,9 +90,10 @@ py::array_t<double> convert_mat_to_np(const raisim::Mat<n, m> &mat) {
 //        mat);   // numpy array references this parent
 }
 
+
 /// \brief: convert from np.array[float[n,m]] to raisim::Mat<n,m>
 template<size_t n, size_t m>
-py::array_t<double> convert_np_to_mat(py::array_t<double> array) {
+raisim::Mat<n, m> convert_np_to_mat(py::array_t<double> array) {
 
     // check dimensions and shape
     if (array.ndim() != 2) {
@@ -113,6 +116,26 @@ py::array_t<double> convert_np_to_mat(py::array_t<double> array) {
     for (size_t i=0; i<n; i++)
         for (size_t j=0; j<m; j++)
             mat[i, j] = *array.data(i, j);
+
+    // return matrix
+    return mat;
 }
+
+
+/// \brief: convert from raisim::VecDyn to np.array[float64[n]]
+py::array_t<double> convert_vecdyn_to_np(const raisim::VecDyn &vec);
+
+
+/// \brief: convert from np.array[float[n]] to raisim::VecDyn
+raisim::VecDyn convert_np_to_vecdyn(py::array_t<double> array);
+
+
+/// \brief: convert from raisim::MatDyn to np.array[float64[n,m]]
+py::array_t<double> convert_matdyn_to_np(const raisim::MatDyn &mat);
+
+
+/// \brief: convert from np.array[float[n,m]] to raisim::MatDyn
+raisim::MatDyn convert_np_to_matdyn(py::array_t<double> array);
+
 
 #endif

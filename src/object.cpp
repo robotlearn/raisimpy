@@ -39,8 +39,15 @@ void init_terrain(py::module &);
 
 void init_object(py::module &m) {
 
+    // create submodule
+    py::module object_module = m.def_submodule("object", "RaiSim contact submodule.");
+
+
+    /**************/
+    /* ObjectType */
+    /**************/
 	// object type enum (from include/raisim/configure.hpp)
-	py::enum_<raisim::ObjectType>(m, "ObjectType", py::arithmetic())
+	py::enum_<raisim::ObjectType>(object_module, "ObjectType", py::arithmetic())
 	    .value("SPHERE", raisim::ObjectType::SPHERE)
 	    .value("BOX", raisim::ObjectType::BOX)
 	    .value("CYLINDER", raisim::ObjectType::CYLINDER)
@@ -52,26 +59,36 @@ void init_object(py::module &m) {
 	    .value("HEIGHTMAP", raisim::ObjectType::HEIGHTMAP)
 	    .value("ARTICULATED_SYSTEM", raisim::ObjectType::ARTICULATED_SYSTEM);
 
+
+    /************/
+    /* BodyType */
+    /************/
 	// body type enum (from include/raisim/configure.hpp)
-	py::enum_<raisim::BodyType>(m, "BodyType", py::arithmetic())
+	py::enum_<raisim::BodyType>(object_module, "BodyType", py::arithmetic())
 	    .value("STATIC", raisim::BodyType::STATIC)
 	    .value("KINEMATIC", raisim::BodyType::KINEMATIC)
 	    .value("DYNAMIC", raisim::BodyType::DYNAMIC);
 
-	// object class
-	py::class_<raisim::Object>(m, "Object", "Raisim Object from which all other objects/bodies inherit from.")
+
+	/**********/
+	/* Object */
+	/**********/
+	py::class_<raisim::Object>(object_module, "Object", "Raisim Object from which all other objects/bodies inherit from.")
 	    .def_property("name", &raisim::Object::getName, &raisim::Object::setName)
 	    .def("get_name", &raisim::Object::getName, "Get the object's name.")
-	    .def("set_name", &raisim::Object::setName, "Set the object's name.", py::arg("name"));
+	    .def("set_name", &raisim::Object::setName, "Set the object's name.", py::arg("name"))
+	    .def("clear_per_object_contact", &raisim::Object::clearPerObjectContact)
+	    .def("add_contact_to_per_object_contact", &raisim::Object::addContactToPerObjectContact)
+	    ;
 
 
 	// raisim.object.singleBodies
-	init_single_bodies(m);
+	init_single_bodies(object_module);
 
 	// raisim.object.ArticulatedSystem
-	init_articulated_system(m);
+	init_articulated_system(object_module);
 
 	// raisim.object.terrain
-	init_terrain(m);
+	init_terrain(object_module);
 
 }

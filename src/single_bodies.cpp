@@ -45,7 +45,9 @@ using namespace raisim;
 
 void init_single_bodies(py::module &m) {
 
-	// single body object class
+    /********************/
+	/* SingleBodyObject */
+	/********************/
 	py::class_<raisim::SingleBodyObject, raisim::Object>(m, "SingleBodyObject", "Raisim Single Object from which all single objects/bodies (such as box, sphere, etc) inherit from.")
 	    .def(py::init<raisim::ObjectType>(), "Initialize the Object.", py::arg("object_type"))
 	    .def("get_position", &raisim::SingleBodyObject::getPosition, R"mydelimiter(
@@ -125,9 +127,19 @@ void init_single_bodies(py::module &m) {
 
 	    Returns:
 	        np.array[float[3,3]]: body inertia matrix.
-	    )mydelimiter");
+	    )mydelimiter")
+	    .def("get_object_type", &raisim::SingleBodyObject::getObjectType, R"mydelimiter(
+	    Get the body's type.
 
-	// box class
+	    Returns:
+	        raisim.ObjectType: object type (BOX, CYLINDER, CAPSULE, CONE, SPHERE, etc.)
+	    )mydelimiter")
+	    ;
+
+
+    /*******/
+	/* Box */
+	/*******/
 	py::class_<raisim::Box, raisim::SingleBodyObject>(m, "Box", "Raisim Box.")
 	    .def(py::init<double, double, double, double>(),
 	    "Initialize a box.\n\n"
@@ -137,7 +149,7 @@ void init_single_bodies(py::module &m) {
 	    "    z (float): length along the z axis.\n"
 	    "    mass (float): mass of the box.",
 	    py::arg("x"), py::arg("y"), py::arg("z"), py::arg("mass"))
-	    .def("get_dim", [](raisim::Box &box) {
+	    .def("get_dimensions", [](raisim::Box &box) {
 	        Vec<3> dimensions = box.getDim();
 	        return convert_vec_to_np(dimensions);
 	    }, R"mydelimiter(
@@ -147,7 +159,10 @@ void init_single_bodies(py::module &m) {
 	        tuple[float[3]]: dimensions along each axis.
 	    )mydelimiter");
 
-	// capsule class
+
+    /***********/
+	/* Capsule */
+	/***********/
 	py::class_<raisim::Capsule, raisim::SingleBodyObject>(m, "Capsule", "Raisim Capsule.")
 	    .def(py::init<double, double, double>(),
 	    "Initialize a capsule.\n\n"
@@ -169,9 +184,15 @@ void init_single_bodies(py::module &m) {
 	        float: height of the capsule.
 	    )mydelimiter");
 
-    // compound class
 
-	// cone class
+    /************/
+    /* Compound */
+    /************/
+
+
+    /********/
+	/* Cone */
+	/********/
 	py::class_<raisim::Cone, raisim::SingleBodyObject>(m, "Cone", "Raisim Cone.")
 	    .def(py::init<double, double, double>(),
 	    "Initialize a cone.\n\n"
@@ -193,7 +214,10 @@ void init_single_bodies(py::module &m) {
 	        float: height of the cone.
 	    )mydelimiter");
 
-    // cylinder class
+
+    /************/
+    /* Cylinder */
+    /************/
 	py::class_<raisim::Cylinder, raisim::SingleBodyObject>(m, "Cylinder", "Raisim Cylinder.")
 	    .def(py::init<double, double, double>(),
 	    "Initialize a cylinder.\n\n"
@@ -215,7 +239,10 @@ void init_single_bodies(py::module &m) {
 	        float: height of the cylinder.
 	    )mydelimiter");
 
-//	// mesh class
+
+    /********/
+    /* Mesh */
+    /********/
 //	py::class_<raisim::Mesh, raisim::SingleBodyObject>(m, "Mesh", "Raisim Mesh.")
 //	    .def(py::init<const std::string&, dSpaceID>(),
 //	    "Initialize a Mesh.\n\n"
@@ -224,7 +251,10 @@ void init_single_bodies(py::module &m) {
 //	    "    space (dSpaceID): space.",
 //	    py::arg("filename"), py::arg("space"));
 
-	// sphere class
+
+    /**********/
+	/* Sphere */
+	/**********/
 	py::class_<raisim::Sphere, raisim::SingleBodyObject>(m, "Sphere", "Raisim Sphere.")
 	    .def(py::init<double, double>(),
 	    "Initialize a sphere.\n\n"

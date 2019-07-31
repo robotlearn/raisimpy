@@ -57,17 +57,80 @@ PYBIND11_MODULE(raisim, m) {
 
 	m.doc() = "Python wrappers for the RaiSim library and visualizer."; // docstring for the module
 
-	// raisim.object (define primitive shapes and articulated systems)
-	init_object(m);
 
-	// raisim.constraint
-    init_constraints(m);
+	/*************/
+	/* Materials */
+    /*************/
+    py::class_<raisim::MaterialPairProperties>(m, "MaterialPairProperties", "Raisim Material Pair Properties (friction and restitution).")
+        .def(py::init<>(), "Initialize the material pair properties.")
+        .def(py::init<double, double, double>(),
+        "Initialize the material pair properties.\n\n"
+        "Args:\n"
+        "    friction (float): coefficient of friction.\n"
+        "    restitution (float): coefficient of restitution.\n"
+        "    threshold (float): restitution threshold.",
+        py::arg("friction"), py::arg("restitution"), py::arg("threshold"));
 
-	// raisim.contact
+
+    py::class_<raisim::MaterialManager>(m, "MaterialManager", "Raisim Material Manager.")
+        .def(py::init<>(), "Initialize the material pair manager.")
+        .def(py::init<const std::string>(),
+        "Initialize the material manager by uploading the material data from a file.\n\n"
+        "Args:\n"
+        "    xml_file (float): xml file.",
+        py::arg("xml_file"))
+        .def("set_material_pair_properties", &raisim::MaterialManager::setMaterialPairProp, R"mydelimiter(
+        Set the material pair properties (friction and restitution).
+
+        Args:
+            material1 (str): first material.
+            material2 (str): second material.
+            friction (float): coefficient of friction.
+            restitution (float): coefficient of restitution.
+            threshold (float): restitution threshold.
+        )mydelimiter",
+        py::arg("material1"), py::arg("material2"), py::arg("friction"), py::arg("restitution"), py::arg("threshold"))
+        .def("get_material_pair_properties", &raisim::MaterialManager::getMaterialPairProp, R"mydelimiter(
+        Get the material pair properties (friction and restitution).
+
+        Args:
+            material1 (str): first material.
+            material2 (str): second material.
+
+        Returns:
+            MaterialPairProperties: material pair properties (friction, restitution, and restitution threshold).
+        )mydelimiter",
+        py::arg("material1"), py::arg("material2"))
+        .def("set_default_material_properties", &raisim::MaterialManager::setDefaultMaterialProperties, R"mydelimiter(
+        Set the default material properties.
+
+        Args:
+            friction (float): coefficient of friction.
+            restitution (float): coefficient of restitution.
+            threshold (float): restitution threshold.
+        )mydelimiter",
+        py::arg("friction"), py::arg("restitution"), py::arg("threshold"))
+    ;
+
+
+    /******************/
+	/* raisim.contact */
+	/******************/
 	init_contact(m);
 
+    /*****************/
+	/* raisim.object */
+	/*****************/
+	init_object(m);  // define primitive shapes and articulated systems)
 
-	// world class
+    /*********************/
+	/* raisim.constraint */
+	/*********************/
+    init_constraints(m);
+
+    /*********/
+	/* World */
+	/*********/
 	py::class_<raisim::World>(m, "World", "Raisim world.", py::dynamic_attr()) // enable dynamic attributes for C++ class in Python
 	    .def(py::init<>(), "Initialize the World.")
 	    .def(py::init<const std::string &>(), "Initialize the World from the given config file.", py::arg("configFile"))
@@ -178,8 +241,6 @@ PYBIND11_MODULE(raisim, m) {
 //	        Ground: the ground instance.
 //	    )mydelimiter",
 //	    py::arg("height"), py::arg("material") = "default", py::arg("collision_mask") = CollisionGroup(-1))
-
-
 
 
 	    .def("integrate", &raisim::World::integrate, "this function is simply calling both `integrate1()` and `integrate2()` one-by-one.")
