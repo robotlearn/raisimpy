@@ -46,14 +46,14 @@ using namespace raisim;
 void init_object(py::module &);
 void init_constraints(py::module &);
 void init_contact(py::module &);
-// void init_visualizer(py::module &);
+void init_visualizer(py::module &);
 
 
 // The PYBIND11_MODULE() macro creates a function that will be called when an import statement is issued from within
 // Python. In the following, "raisim" is the module name, "m" is a variable of type py::module which is the main
 // interface for creating bindings. The method module::def() generates binding code that exposes the C++ function
 // to Python.
-PYBIND11_MODULE(raisim, m) {
+PYBIND11_MODULE(raisimpy, m) {
 
 	m.doc() = "Python wrappers for the RaiSim library and visualizer."; // docstring for the module
 
@@ -301,9 +301,9 @@ PYBIND11_MODULE(raisim, m) {
         )mydelimiter", py::arg("time"))
         ;
 
-	// visualizer class
-//	py::class_<raisim::OgreVis, std::unique_ptr<raisim::Ogrevis, py::nodelete>>(m, "Visualizer", "Ogre visualizer for Raisim.")
-//	    .def(py::init(&raisim::OgreVis::get), "Create Ogre visualizer instance (singleton).", py::return_value_policy::reference)
-//	    .def("get", &raisim::OgreVis::get, "Get the single Ogre visualizer instance (singleton).")
-//	    .def();
+
+	/*********************/
+	/* raisim.visualizer */
+	/*********************/
+    init_visualizer(m);
 }

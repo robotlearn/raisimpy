@@ -1,5 +1,5 @@
 //
-// Created by jemin on 3/3/19.
+// Created by Jemin Hwangbo on 3/3/19.
 // MIT License
 //
 // Copyright (c) 2019-2019 Robotic Systems Lab, ETH Zurich
@@ -37,6 +37,9 @@ class Deserializer {
  public:
   explicit Deserializer(const std::string &resDir) {
     resDir_ = resDir;
+    if(resDir_.back() =='/')
+      resDir_ = resDir.substr(0, resDir_.size()-1);
+
     receiveVector_.resize(raisim::RaisimServer::SEND_BUFFER_SIZE);
   };
 

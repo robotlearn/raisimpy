@@ -1,5 +1,5 @@
 //
-// Created by jemin on 2/28/19.
+// Created by Jemin Hwangbo on 2/28/19.
 // MIT License
 //
 // Copyright (c) 2019-2019 Robotic Systems Lab, ETH Zurich
@@ -59,29 +59,18 @@ void imguiRenderCallBack() {
   ImGui::Checkbox("Contact Forces", &raisim::gui::showForces);
   ImGui::PopFont();
 
-  ImGui::Text("Rewards");
-  ImGui::Separator();
-  double max = 0.;
-  for(auto& item: raisim::gui::rewardLogger.getRewardTerms())
-    max = std::max(max, fabs(item.second.sum / double(item.second.count)));
-
-  for(auto& item: raisim::gui::rewardLogger.getRewardTerms()) {
-    double avg = item.second.sum / double(item.second.count);
-    float percentage = fabs(avg) / max;
-    char buf[32];
-    sprintf(buf, "%f", avg);
-    ImGui::ProgressBar(percentage, ImVec2(0.f,0.f), buf);
-    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-    ImGui::Text("  %s", item.first.c_str());
-  }
-
-
   if(raisim::gui::showBodies) mask |= raisim::OgreVis::RAISIM_OBJECT_GROUP;
   if(raisim::gui::showCollision) mask |= raisim::OgreVis::RAISIM_COLLISION_BODY_GROUP;
   if(raisim::gui::showContacts) mask |= raisim::OgreVis::RAISIM_CONTACT_POINT_GROUP;
   if(raisim::gui::showForces) mask |= raisim::OgreVis::RAISIM_CONTACT_FORCE_GROUP;
 
   vis->setVisibilityMask(mask);
+  if(raisim::gui::manualStepping) {
+    if(vis->getTakeNSteps() == -1)
+      vis->getTakeNSteps() = 0;
+  } else {
+    vis->getTakeNSteps() = -1;
+  }
 
   if (ImGui::CollapsingHeader("Simulation")) {
     ImGui::PushFont(fontMid);
@@ -89,16 +78,12 @@ void imguiRenderCallBack() {
     static int takeNSteps = 1;
     ImGui::Checkbox("Manual stepping", &raisim::gui::manualStepping);
     if(raisim::gui::manualStepping) {
-      if(vis->getTakeNSteps() == -1)
-        vis->getTakeNSteps() = 0;
-
       std::string tempString = "Remaining Steps: " + std::to_string(vis->getTakeNSteps());
       ImGui::Text("%s", tempString.c_str());
       ImGui::Text("Take "); ImGui::SameLine(); ImGui::InputInt("", &takeNSteps); ImGui::SameLine(); ImGui::Text(" steps"); ImGui::SameLine();
       if(ImGui::Button("Run"))
         vis->getTakeNSteps() += takeNSteps;
     } else {
-      vis->getTakeNSteps() = -1;
       if(ImGui::Button("Set to real time"))
         vis->getRealTimeFactorReference() = 1.f;
       ImGui::SameLine();
@@ -149,7 +134,7 @@ void imguiRenderCallBack() {
       ImGui::PopFont();
 
       ImGui::PushFont(fontMid);
-      ImGui::Text("Ncontacts: %d", int(ro->getContacts().size()));
+      ImGui::Text("Ncontacts: %lu", ro->getContacts().size());
       ImGui::PopFont();
     }
   }
@@ -157,7 +142,7 @@ void imguiRenderCallBack() {
   if (ImGui::CollapsingHeader("Contacts")) {
     ImGui::PushFont(fontMid);
     ImGui::Text("Solver Iterations: %d", world->getContactSolver().getLoopCounter());
-    ImGui::Text("Total number of contacts: %d", int(world->getContactProblem()->size()));
+    ImGui::Text("Total number of contacts: %lu", world->getContactProblem()->size());
     std::vector<float> error;
     error.reserve(world->getContactSolver().getLoopCounter());
 
@@ -201,6 +186,13 @@ void imguiRenderCallBack() {
     }
   }
 
+  if (ImGui::CollapsingHeader("Key maps")) {
+    ImGui::Text("F1~4        : toggle visualization mask\n");
+    ImGui::Text("Mouse L : orbital mode\n");
+    ImGui::Text("Mouse R : free cam mode\n");
+    ImGui::Text("Shift        : pan during free cam mode\n");
+  }
+
   const float INDENT = ImGui::GetTreeNodeToLabelSpacing();
   if (ImGui::CollapsingHeader("Object List")) {
     ImGui::Indent(INDENT);
@@ -231,6 +223,7 @@ void imguiRenderCallBack() {
   }
 
   ImGui::End();
+
 }
 
 void imguiSetupCallback() {

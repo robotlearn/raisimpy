@@ -48,19 +48,20 @@ void init_contact(py::module &m) {
     /* Contact class */
     /*****************/
     py::class_<raisim::contact::Contact>(contact_module, "Contact", "Raisim Contact.")
-        .def("__init__", [](raisim::contact::Contact &self, py::array_t<double> position, py::array_t<double> normal,
-            bool objectA, size_t contact_problem_index, size_t contact_index_in_object, size_t pair_object_index,
+        .def(py::init([](py::array_t<double> position, py::array_t<double> normal, bool objectA,
+            size_t contact_problem_index, size_t contact_index_in_object, size_t pair_object_index,
             BodyType pair_object_body_type, size_t pair_contact_index_in_pair_object, size_t local_body_index,
             double depth)
             {
-            // convert the arrays to Vec<3>
-            raisim::Vec<3> pos = convert_np_to_vec<3>(position);
-            raisim::Vec<3> norm = convert_np_to_vec<3>(normal);
+                // convert the arrays to Vec<3>
+                raisim::Vec<3> pos = convert_np_to_vec<3>(position);
+                raisim::Vec<3> norm = convert_np_to_vec<3>(normal);
 
-            // instantiate the class
-            new (&self) raisim::contact::Contact(pos, norm, objectA, contact_problem_index, contact_index_in_object,
-                pair_object_index, pair_object_body_type, pair_contact_index_in_pair_object, local_body_index, depth);
-            },
+                // instantiate the class
+                return new raisim::contact::Contact(pos, norm, objectA, contact_problem_index, contact_index_in_object,
+                    pair_object_index, pair_object_body_type, pair_contact_index_in_pair_object, local_body_index,
+                    depth);
+            }),
             "Instantiate the contact class.\n\n"
 	        "Args:\n"
 	        "    position (np.array[float[3]]): position vector.\n"

@@ -1,5 +1,5 @@
 //
-// Created by jemin on 4/11/19.
+// Created by Jemin Hwangbo on 2/28/19.
 // MIT License
 //
 // Copyright (c) 2019-2019 Robotic Systems Lab, ETH Zurich
@@ -22,33 +22,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef RAISIMOGREVISUALIZER_RAISIMKEYBOARDCALLBACK_HPP
-#define RAISIMOGREVISUALIZER_RAISIMKEYBOARDCALLBACK_HPP
 
-#include "raisim/OgreVis.hpp"
-#include "raisimKeyboardCallback.hpp"
-#include "guiState.hpp"
 
-bool raisimKeyboardCallback(const OgreBites::KeyboardEvent &evt) {
-  auto &key = evt.keysym.sym;
-  // termination gets the highest priority
-  switch (key) {
-    case '1':
-      raisim::gui::showBodies = !raisim::gui::showBodies;
-      break;
-    case '2':
-      raisim::gui::showCollision = !raisim::gui::showCollision;
-      break;
-    case '3':
-      raisim::gui::showContacts = !raisim::gui::showContacts;
-      break;
-    case '4':
-      raisim::gui::showForces = !raisim::gui::showForces;
-      break;
-    default:
-      break;
-  }
-  return false;
+#ifndef RAISIMOGREVISUALIZER_HELPER_HPP
+#define RAISIMOGREVISUALIZER_HELPER_HPP
+
+#include <string>
+#define MAKE_STR(x) _MAKE_STR(x)
+#define _MAKE_STR(x) #x
+
+namespace raisim {
+
+inline std::string loadResource (const std::string& file) {
+  return std::string(MAKE_STR(EXAMPLE_ROBOT_RESOURCE_DIR))+file;
 }
 
-#endif //RAISIMOGREVISUALIZER_RAISIMKEYBOARDCALLBACK_HPP
+}
+
+
+#endif //RAISIMOGREVISUALIZER_HELPER_HPP
