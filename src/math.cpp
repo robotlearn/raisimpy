@@ -1,10 +1,10 @@
 /**
- * Python wrappers for raisim.math using pybind11. Have alsso a look at
+ * Python wrappers for raisim.math using pybind11. Have also a look at
  * `converter.hpp` and `converter.cpp` which contains the code to convert between
  * np.array to raisim::Vec, raisim::Mat, raisim::VecDyn, raisim::MatDyn, and
  * raisim::Transformation.
  *
- * Copyright (c) 2019, Brian Delhaisse <briandelhaisse@gmail.com>
+ * Copyright (c) 2019, jhwangbo (C++), Brian Delhaisse <briandelhaisse@gmail.com> (Python wrappers)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,10 @@ void init_math(py::module &m) {
 
     // the code to convert between the data types is in `converter.hpp` and `converter.cpp`.
 
+
+    /******************/
+    /* Transformation */
+    /******************/
     py::class_<raisim::Transformation>(m, "Transformation", "Raisim homogeneous transformation.")
         .def(py::init<>())  // default constructor
         .def_property("rot",
@@ -66,5 +70,14 @@ void init_math(py::module &m) {
                 Vec<3> pos = convert_np_to_vec<3>(array);
                 self.pos = pos;
             });
+
+
+    /******************/
+    /* SparseJacobian */
+    /******************/
+
+    // In Python, we will use instead Numpy instead of this class. For this purpose, you will have to get the MatDyn
+    // member variable from the SparseJacobian class and use the converters in `converter.hpp` to convert this MatDyn
+    // to a valid numpy array.
 
 }

@@ -1,7 +1,7 @@
 /**
  * Python wrappers for raisim.object using pybind11.
  *
- * Copyright (c) 2019, Brian Delhaisse <briandelhaisse@gmail.com>
+ * Copyright (c) 2019, kangd (original C++), Brian Delhaisse <briandelhaisse@gmail.com> (Python wrappers)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ using namespace raisim;
 
 
 void init_single_bodies(py::module &);
-void init_articulated_system(py::module &);
+void init_articulated_system(py::module &, py::module &);
 void init_terrain(py::module &);
 
 
@@ -75,6 +75,7 @@ void init_object(py::module &m) {
 	/**********/
 	/* Object */
 	/**********/
+	// Object class (from include/raisim/object/Object.hpp)
 	py::class_<raisim::Object>(object_module, "Object", "Raisim Object from which all other objects/bodies inherit from.")
 	    .def_property("name", &raisim::Object::getName, &raisim::Object::setName)
 	    .def("get_name", &raisim::Object::getName, "Get the object's name.")
@@ -86,12 +87,12 @@ void init_object(py::module &m) {
 	    .def("get_contacts", py::overload_cast<>(&raisim::Object::getContacts))
 	    .def("get_contacts", py::overload_cast<>(&raisim::Object::getContacts, py::const_))
 	    .def("update_collision", &raisim::Object::updateCollision, "Update the collisions.")
-	    .def("prec_contact_solver_update1", [](raisim::Object &self, py::array_t<double> gravity, double dt) {
+	    .def("pre_contact_solver_update1", [](raisim::Object &self, py::array_t<double> gravity, double dt) {
 	        // convert np.array[3] to Vec<3>
 	        Vec<3> vec = convert_np_to_vec<3>(gravity);
 	        self.preContactSolverUpdate1(vec, dt);
 	    }, py::arg("gravity"), py::arg("dt"))
-	    .def("prec_contact_solver_update2", [](raisim::Object &self, py::array_t<double> gravity, double dt) {
+	    .def("pre_contact_solver_update2", [](raisim::Object &self, py::array_t<double> gravity, double dt) {
 	        // convert np.array[3] to Vec<3>
 	        Vec<3> vec = convert_np_to_vec<3>(gravity);
 	        self.preContactSolverUpdate1(vec, dt);
@@ -192,15 +193,23 @@ void init_object(py::module &m) {
 	        Vec<3> vel;
 	        self.getContactPointVel(point_id, vel);
 	        return convert_vec_to_np(vel);
-	    })
-	    ;
+	    }, R"mydelimiter(
+	    Get the contact point velocity.
+
+	    Args:
+	        point_id (int): point id.
+
+	    Returns:
+	        np.array[float[3]]: contact point velocity.
+	    )mydelimiter",
+	    py::arg("point_id"));
 
 
 	// raisim.object.singleBodies
 	init_single_bodies(object_module);
 
 	// raisim.object.ArticulatedSystem
-	init_articulated_system(object_module);
+	init_articulated_system(object_module, m);
 
 	// raisim.object.terrain
 	init_terrain(object_module);

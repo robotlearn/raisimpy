@@ -1,7 +1,7 @@
 /**
  * Python wrappers for raisim.World using pybind11.
  *
- * Copyright (c) 2019, Brian Delhaisse <briandelhaisse@gmail.com>
+ * Copyright (c) 2019, kangd (original C++), Brian Delhaisse <briandelhaisse@gmail.com> (Python wrappers)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -166,7 +166,7 @@ void init_world(py::module &m) {
 	    Returns:
 	        Ground: the ground instance.
 	    )mydelimiter",
-	    py::arg("height"), py::arg("material") = "default", py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("height") = 0., py::arg("material") = "default", py::arg("collision_mask") = CollisionGroup(-1))
 
 
         .def("add_heightmap", py::overload_cast<int, int, double, double, double, double, const std::vector<double> &,

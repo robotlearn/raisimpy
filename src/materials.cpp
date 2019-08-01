@@ -1,7 +1,7 @@
 /**
  * Python wrappers for raisim.Materials using pybind11.
  *
- * Copyright (c) 2019, Brian Delhaisse <briandelhaisse@gmail.com>
+ * Copyright (c) 2019, jhwangbo (C++), Brian Delhaisse <briandelhaisse@gmail.com> (Python wrappers)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

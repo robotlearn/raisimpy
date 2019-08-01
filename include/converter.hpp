@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-#ifndef CONVERTER_H
-#define CONVERTER_H
+#ifndef RAISIMPY_CONVERTER_H
+#define RAISIMPY_CONVERTER_H
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>   // numpy types
 
 #include <sstream>           // for ostringstream
+#include "Ogre.h"            // Ogre
 #include "raisim/math.hpp"   // contains the definitions of Vec, Mat, VecDyn, MatDyn, etc.
 #include "Eigen/Geometry"    // for Eigen::Quaterniond
 
@@ -51,7 +52,7 @@ py::array_t<double> convert_vec_to_np(raisim::Vec<n> &vec) {
 
 /// \brief: convert from np.array[float[n]] to raisim::Vec<n>
 template<size_t n>
-raisim::Vec<n> convert_np_to_vec(py::array_t<double> array) {
+raisim::Vec<n> convert_np_to_vec(py::array_t<double> &array) {
 
     // check size
     if (array.size() != n) {
@@ -94,7 +95,7 @@ py::array_t<double> convert_mat_to_np(const raisim::Mat<n, m> &mat) {
 
 /// \brief: convert from np.array[float[n,m]] to raisim::Mat<n,m>
 template<size_t n, size_t m>
-raisim::Mat<n, m> convert_np_to_mat(py::array_t<double> array) {
+raisim::Mat<n, m> convert_np_to_mat(py::array_t<double> &array) {
 
     // check dimensions and shape
     if (array.ndim() != 2) {
@@ -128,7 +129,7 @@ py::array_t<double> convert_vecdyn_to_np(const raisim::VecDyn &vec);
 
 
 /// \brief: convert from np.array[float[n]] to raisim::VecDyn
-raisim::VecDyn convert_np_to_vecdyn(py::array_t<double> array);
+raisim::VecDyn convert_np_to_vecdyn(py::array_t<double> &array);
 
 
 /// \brief: convert from raisim::MatDyn to np.array[float64[n,m]]
@@ -136,7 +137,7 @@ py::array_t<double> convert_matdyn_to_np(const raisim::MatDyn &mat);
 
 
 /// \brief: convert from np.array[float[n,m]] to raisim::MatDyn
-raisim::MatDyn convert_np_to_matdyn(py::array_t<double> array);
+raisim::MatDyn convert_np_to_matdyn(py::array_t<double> &array);
 
 
 /// \brief: convert from raisim::Transformation to np.array[float[4,4]]
@@ -144,7 +145,7 @@ py::array_t<double> convert_transformation_to_np(const raisim::Transformation &t
 
 
 /// \brief: convert from np.array[float[4,4]] to raisim::Transformation
-raisim::Transformation convert_np_to_transformation(py::array_t<double> array);
+raisim::Transformation convert_np_to_transformation(py::array_t<double> &array);
 
 
 /// \brief: convert from Eigen::Quaterniond to np.array[float[4]]
@@ -152,7 +153,47 @@ py::array_t<double> convert_quaternion_to_np(const Eigen::Quaterniond &quaternio
 
 
 /// \brief: convert from np.array[float[4]] to Eigen::Quaterniond
-Eigen::Quaterniond convert_np_to_quaternion(py::array_t<double> array);
+Eigen::Quaterniond convert_np_to_quaternion(py::array_t<double> &array);
+
+
+/// \brief: convert from Ogre::Vector3 to np.array[float[3]]
+py::array_t<double> convert_ogre_vec3_to_np(const Ogre::Vector3 &vec);
+
+
+/// \brief: convert from np.array[float[3]] to Ogre::Vector3
+Ogre::Vector3 convert_np_to_ogre_vec3(py::array_t<double> &array);
+
+
+/// \brief: convert from Ogre::Vector4 to np.array[float[4]]
+py::array_t<double> convert_ogre_vec4_to_np(const Ogre::Vector4 &vec);
+
+
+/// \brief: convert from np.array[float[4]] to Ogre::Vector4
+Ogre::Vector4 convert_np_to_ogre_vec4(py::array_t<double> &array);
+
+
+/// \brief: convert from Ogre::Quaternion to np.array[float[4]]
+py::array_t<double> convert_ogre_quat_to_np(const Ogre::Quaternion &quat);
+
+
+/// \brief: convert from np.array[float[4]] to Ogre::Quaternion
+Ogre::Quaternion convert_np_to_ogre_quat(py::array_t<double> &array);
+
+
+/// \brief: convert from Ogre::Matrix3 to np.array[float[3,3]]
+py::array_t<double> convert_ogre_mat3_to_np(const Ogre::Matrix3 &mat);
+
+
+/// \brief: convert from np.array[float[3,3]] to Ogre::Matrix3
+Ogre::Matrix3 convert_np_to_ogre_mat3(py::array_t<double> &array);
+
+
+/// \brief: convert from Ogre::Matrix4 to np.array[float[4,4]]
+py::array_t<double> convert_ogre_mat4_to_np(const Ogre::Matrix4 &mat);
+
+
+/// \brief: convert from np.array[float[4,4]] to Ogre::Matrix4
+Ogre::Matrix4 convert_np_to_ogre_mat4(py::array_t<double> &array);
 
 
 #endif

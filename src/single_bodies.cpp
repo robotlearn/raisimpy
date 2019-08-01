@@ -1,7 +1,7 @@
 /**
  * Python wrappers for raisim.object using pybind11.
  *
- * Copyright (c) 2019, Brian Delhaisse <briandelhaisse@gmail.com>
+ * Copyright (c) 2019, kangd and jhwangbo (original C++), Brian Delhaisse <briandelhaisse@gmail.com> (Python wrappers)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -68,6 +68,7 @@ void init_single_bodies(py::module &m) {
     /******************/
     /* GyroscopicMode */
     /******************/
+    // GyroscopicMode enum (from include/raisim/object/singleBodies/SingleBodyObject.hpp)
     py::enum_<raisim::GyroscopicMode>(m, "GyroscopicMode", py::arithmetic())
 	    .value("IMPLICIT_GYROSCOPIC_FORCE_BODY", raisim::GyroscopicMode::IMPLICIT_GYROSCOPIC_FORCE_BODY)  // implicit body model (stable, more computation)
 	    .value("IMPLICIT_GYROSCOPIC_FORCE_WORLD", raisim::GyroscopicMode::IMPLICIT_GYROSCOPIC_FORCE_WORLD)  // implicit world model (stable, more computation)
@@ -78,6 +79,7 @@ void init_single_bodies(py::module &m) {
     /********************/
 	/* SingleBodyObject */
 	/********************/
+	// SingleBodyObject class (from include/raisim/object/singleBodies/SingleBodyObject.hpp)
 	py::class_<raisim::SingleBodyObject, raisim::Object>(m, "SingleBodyObject", "Raisim Single Object from which all single objects/bodies (such as box, sphere, etc) inherit from.")
 
 	    .def(py::init<raisim::ObjectType>(), "Initialize the Object.", py::arg("object_type"))
@@ -387,14 +389,14 @@ void init_single_bodies(py::module &m) {
 	    py::arg("mode"))
 
 
-        .def("prec_contact_solver_update1", [](raisim::Object &self, py::array_t<double> gravity, double dt) {
+        .def("pre_contact_solver_update1", [](raisim::SingleBodyObject &self, py::array_t<double> gravity, double dt) {
 	        // convert np.array[3] to Vec<3>
 	        Vec<3> vec = convert_np_to_vec<3>(gravity);
 	        self.preContactSolverUpdate1(vec, dt);
 	    }, py::arg("gravity"), py::arg("dt"))
 
 
-	    .def("prec_contact_solver_update2", [](raisim::Object &self, py::array_t<double> gravity, double dt) {
+	    .def("pre_contact_solver_update2", [](raisim::SingleBodyObject &self, py::array_t<double> gravity, double dt) {
 	        // convert np.array[3] to Vec<3>
 	        Vec<3> vec = convert_np_to_vec<3>(gravity);
 	        self.preContactSolverUpdate1(vec, dt);
@@ -404,11 +406,20 @@ void init_single_bodies(py::module &m) {
 	    .def("integrate", &raisim::SingleBodyObject::integrate, "integrate.", py::arg("dt"))
 
 
-        .def("get_contact_point_velocity", [](raisim::Object &self, size_t point_id) {
+        .def("get_contact_point_velocity", [](raisim::SingleBodyObject &self, size_t point_id) {
 	        Vec<3> vel;
 	        self.getContactPointVel(point_id, vel);
 	        return convert_vec_to_np(vel);
-	    })
+	    }, R"mydelimiter(
+	    Get the contact point velocity.
+
+	    Args:
+	        point_id (int): point id.
+
+	    Returns:
+	        np.array[float[3]]: contact point velocity.
+	    )mydelimiter",
+	    py::arg("point_id"))
 
 
         .def("update_collision", &raisim::SingleBodyObject::updateCollision, "Update the collisions.")
@@ -464,6 +475,7 @@ void init_single_bodies(py::module &m) {
     /*******/
 	/* Box */
 	/*******/
+	// Box class (from include/raisim/object/singleBodies/Box.hpp)
 	py::class_<raisim::Box, raisim::SingleBodyObject>(m, "Box", "Raisim Box.")
 	    .def(py::init<double, double, double, double>(),
 	    "Initialize a box.\n\n"
@@ -487,6 +499,7 @@ void init_single_bodies(py::module &m) {
     /***********/
 	/* Capsule */
 	/***********/
+	// Capsule class (from include/raisim/object/singleBodies/Capsule.hpp)
 	py::class_<raisim::Capsule, raisim::SingleBodyObject>(m, "Capsule", "Raisim Capsule.")
 	    .def(py::init<double, double, double>(),
 	    "Initialize a capsule.\n\n"
@@ -512,6 +525,7 @@ void init_single_bodies(py::module &m) {
     /************/
     /* Compound */
     /************/
+    // Compound class (from include/raisim/object/singleBodies/Compound.hpp)
     py::class_<raisim::Compound, raisim::SingleBodyObject> compound(m, "Compound", "Raisim Compound bodies.");
 
     py::class_<raisim::Compound::CompoundObjectChild>(compound, "CompoundObjectChild", "Raisim Compound object child.")
@@ -548,6 +562,7 @@ void init_single_bodies(py::module &m) {
     /********/
 	/* Cone */
 	/********/
+	// Cone class (from include/raisim/object/singleBodies/Cone.hpp)
 	py::class_<raisim::Cone, raisim::SingleBodyObject>(m, "Cone", "Raisim Cone.")
 	    .def(py::init<double, double, double>(),
 	    "Initialize a cone.\n\n"
@@ -573,6 +588,7 @@ void init_single_bodies(py::module &m) {
     /************/
     /* Cylinder */
     /************/
+    // Cylinder class (from include/raisim/object/singleBodies/Cylinder.hpp)
 	py::class_<raisim::Cylinder, raisim::SingleBodyObject>(m, "Cylinder", "Raisim Cylinder.")
 	    .def(py::init<double, double, double>(),
 	    "Initialize a cylinder.\n\n"
@@ -598,6 +614,7 @@ void init_single_bodies(py::module &m) {
     /********/
     /* Mesh */
     /********/
+    // Mesh class (from include/raisim/object/singleBodies/Mesh.hpp)
 	py::class_<raisim::Mesh, raisim::SingleBodyObject>(m, "Mesh", "Raisim Mesh.")
 
 	    .def(py::init<const std::string&, dSpaceID>(),
@@ -630,6 +647,7 @@ void init_single_bodies(py::module &m) {
     /**********/
 	/* Sphere */
 	/**********/
+	// Sphere class (from include/raisim/object/singleBodies/Sphere.hpp)
 	py::class_<raisim::Sphere, raisim::SingleBodyObject>(m, "Sphere", "Raisim Sphere.")
 	    .def(py::init<double, double>(),
 	    "Initialize a sphere.\n\n"
