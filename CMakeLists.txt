@@ -21,5 +21,5 @@ include_directories(include ${EIGEN3_INCLUDE_DIRS})
 # source files
 file(GLOB SOURCES "src/*.cpp")
 
-pybind11_add_module(raisim ${SOURCES})
-target_link_libraries(raisim raisim::raisim raisim::raisimOgre)
+pybind11_add_module(raisimpy ${SOURCES})
+target_link_libraries(raisimpy raisim::raisim raisim::raisimOgre)
