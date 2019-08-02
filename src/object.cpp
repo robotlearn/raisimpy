@@ -49,7 +49,7 @@ void init_object(py::module &m) {
     /* ObjectType */
     /**************/
 	// object type enum (from include/raisim/configure.hpp)
-	py::enum_<raisim::ObjectType>(object_module, "ObjectType", py::arithmetic())
+	py::enum_<raisim::ObjectType>(m, "ObjectType", py::arithmetic())
 	    .value("SPHERE", raisim::ObjectType::SPHERE)
 	    .value("BOX", raisim::ObjectType::BOX)
 	    .value("CYLINDER", raisim::ObjectType::CYLINDER)
@@ -66,7 +66,7 @@ void init_object(py::module &m) {
     /* BodyType */
     /************/
 	// body type enum (from include/raisim/configure.hpp)
-	py::enum_<raisim::BodyType>(object_module, "BodyType", py::arithmetic())
+	py::enum_<raisim::BodyType>(m, "BodyType", py::arithmetic())
 	    .value("STATIC", raisim::BodyType::STATIC)
 	    .value("KINEMATIC", raisim::BodyType::KINEMATIC)
 	    .value("DYNAMIC", raisim::BodyType::DYNAMIC);

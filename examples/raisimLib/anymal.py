@@ -1,17 +1,17 @@
 #!/usr/bin/env python
-"""Anymal example.
+"""Anymal example in raisimLib.
 
 This is the same example as provided in [1], but translated into Python and using the `raisimpy` library (which
 is a wrapper around `raisimLib` [2] and `raisimOgre` [3]).
 
 References:
-    - [1] https://github.com/leggedrobotics/raisimOgre/blob/master/examples/src/primitives/primitives.cpp
+    - [1] https://github.com/leggedrobotics/raisimLib/blob/master/examples/anymal.cpp
     - [2] raisimLib: https://github.com/leggedrobotics/raisimLib
     - [3] raisimOgre: https://github.com/leggedrobotics/raisimOgre
 """
 
-__author__ = "Brian Delhaisse"
-__copyright__ = "Copyright (c), 2019-2019 Robotic Systems Lab, ETH Zurich"
+__author__ = ["Jemin Hwangbo (C++)", "Brian Delhaisse (Python)"]
+__copyright__ = "Copyright (c), 2019 Robotic Systems Lab, ETH Zurich"
 __credits__ = ["Robotic Systems Lab, ETH Zurich + Hwangbo (C++ example code)",
                "Brian Delhaisse (Python wrapper + Python example)"]
 __license__ = "MIT"
@@ -41,7 +41,7 @@ joint_d_gain = np.zeros(18)
 joint_p_gain[-12:] = 200.
 joint_d_gain[-12] = 10.
 
-anymal = sim.add_articulated_system(os.path.dirname(os.path.abspath(__file__)) + "/rsc/ANYmal/robot.urdf")
+anymal = sim.add_articulated_system(os.path.dirname(os.path.abspath(__file__)) + "/../rsc/ANYmal/robot.urdf")
 anymal.set_states(joint_config, joint_vel)
 anymal.set_control_mode(raisim.ControlMode.PD_PLUS_FEEDFORWARD_TORQUE)
 anymal.set_pd_gains(joint_p_gain, joint_d_gain)

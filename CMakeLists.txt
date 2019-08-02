@@ -23,3 +23,6 @@ file(GLOB SOURCES "src/*.cpp")
 
 pybind11_add_module(raisimpy ${SOURCES})
 target_link_libraries(raisimpy raisim::raisim raisim::raisimOgre)
+
+install (TARGETS raisimpy DESTINATION lib)
+# Don't forget to export PYTHONPATH=$PYTHONPATH:$LOCAL_BUILD/lib

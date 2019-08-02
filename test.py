@@ -1,5 +1,5 @@
 import numpy as np
-import raisim
+import raisimpy as raisim
 
 world = raisim.World()
 print("gravity: ", world.get_gravity())

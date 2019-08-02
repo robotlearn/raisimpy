@@ -79,7 +79,8 @@ void init_world(py::module &m) {
 	        Sphere: the sphere instance.
 	    )mydelimiter",
 	    py::arg("radius"), py::arg("mass"), py::arg("material") = "default", py::arg("collision_group") = 1,
-	    py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
 	    .def("add_box", &raisim::World::addBox, R"mydelimiter(
@@ -98,7 +99,8 @@ void init_world(py::module &m) {
 	        Box: the box instance.
 	    )mydelimiter",
 	    py::arg("x"), py::arg("y"), py::arg("z"), py::arg("mass"), py::arg("material") = "default",
-	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
         .def("add_cylinder", &raisim::World::addCylinder, R"mydelimiter(
@@ -116,7 +118,8 @@ void init_world(py::module &m) {
 	        Cylinder: the cylinder instance.
 	    )mydelimiter",
 	    py::arg("radius"), py::arg("height"), py::arg("mass"), py::arg("material") = "default",
-	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
 	    .def("add_cone", &raisim::World::addCone, R"mydelimiter(
@@ -134,7 +137,8 @@ void init_world(py::module &m) {
 	        Cone: the cone instance.
 	    )mydelimiter",
 	    py::arg("radius"), py::arg("height"), py::arg("mass"), py::arg("material") = "default",
-	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
 	    .def("add_capsule", &raisim::World::addCapsule, R"mydelimiter(
@@ -152,7 +156,8 @@ void init_world(py::module &m) {
 	        Capsule: the capsule instance.
 	    )mydelimiter",
 	    py::arg("radius"), py::arg("height"), py::arg("mass"), py::arg("material") = "default",
-	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
 	    .def("add_ground", &raisim::World::addGround, R"mydelimiter(
@@ -166,7 +171,8 @@ void init_world(py::module &m) {
 	    Returns:
 	        Ground: the ground instance.
 	    )mydelimiter",
-	    py::arg("height") = 0., py::arg("material") = "default", py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("height") = 0., py::arg("material") = "default", py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
         .def("add_heightmap", py::overload_cast<int, int, double, double, double, double, const std::vector<double> &,
@@ -190,7 +196,8 @@ void init_world(py::module &m) {
 	    )mydelimiter",
 	    py::arg("x_samples"), py::arg("y_samples"), py::arg("x_scale"), py::arg("y_scale"), py::arg("x_center"),
 	    py::arg("y_center"), py::arg("heights"), py::arg("material") = "default", py::arg("collision_group") = 1,
-	    py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
         .def("add_heightmap", py::overload_cast<const std::string &, double, double, const std::string &,
@@ -209,7 +216,8 @@ void init_world(py::module &m) {
 	        HeightMap: the heightmap instance.
 	    )mydelimiter",
 	    py::arg("filename"), py::arg("x_center"), py::arg("y_center"), py::arg("material") = "default",
-	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
         .def("add_heightmap", py::overload_cast<const std::string &, double, double, double, double, double, double,
@@ -233,7 +241,8 @@ void init_world(py::module &m) {
 	    )mydelimiter",
 	    py::arg("filename"), py::arg("x_center"), py::arg("y_center"), py::arg("x_size"), py::arg("y_size"),
 	    py::arg("height_scale"), py::arg("height_offset"), py::arg("material") = "default",
-	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
         .def("add_heightmap", py::overload_cast<double, double, raisim::TerrainProperties&, const std::string &,
@@ -252,7 +261,8 @@ void init_world(py::module &m) {
 	        HeightMap: the heightmap instance.
 	    )mydelimiter",
 	    py::arg("x_center"), py::arg("y_center"), py::arg("terrain_properties"),
-	    py::arg("material") = "default", py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("material") = "default", py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
         .def("add_articulated_system", &raisim::World::addArticulatedSystem, R"mydelimiter(
@@ -270,7 +280,8 @@ void init_world(py::module &m) {
 	        ArticulatedSystem: the articulated system instance.
 	    )mydelimiter",
 	    py::arg("urdf_path"), py::arg("res_path") = "", py::arg("joint_order") = std::vector<std::string>(), py::arg("collision_group") = 1,
-	    py::arg("collision_mask") = CollisionGroup(-1), py::arg("options") = raisim::ArticulatedSystemOption())
+	    py::arg("collision_mask") = CollisionGroup(-1), py::arg("options") = raisim::ArticulatedSystemOption(),
+	    py::return_value_policy::reference_internal)
 
 
         .def("add_compound", [](raisim::World &self, const std::vector<raisim::Compound::CompoundObjectChild> &children,
@@ -295,7 +306,8 @@ void init_world(py::module &m) {
 	        ArticulatedSystem: the articulated system instance.
 	    )mydelimiter",
 	    py::arg("children"), py::arg("mass") = "", py::arg("inertia"), py::arg("collision_group") = 1,
-	    py::arg("collision_mask") = CollisionGroup(-1))
+	    py::arg("collision_mask") = CollisionGroup(-1),
+	    py::return_value_policy::reference_internal)
 
 
         .def("add_stiff_wire", [](raisim::World &self, raisim::Object &object1, size_t local_idx1,
@@ -324,7 +336,8 @@ void init_world(py::module &m) {
 	        StiffWire: the stiff wire constraint instance.
 	    )mydelimiter",
 	    py::arg("object1"), py::arg("local_idx1"), py::arg("pos_body1"), py::arg("object2"), py::arg("local_idx2"),
-            py::arg("pos_body2"), py::arg("length"))
+            py::arg("pos_body2"), py::arg("length"),
+            py::return_value_policy::reference_internal)
 
 
         .def("add_compliant_wire", [](raisim::World &self, raisim::Object &object1, size_t local_idx1,
@@ -354,7 +367,8 @@ void init_world(py::module &m) {
 	        CompliantWire: the compliant wire constraint instance.
 	    )mydelimiter",
 	    py::arg("object1"), py::arg("local_idx1"), py::arg("pos_body1"), py::arg("object2"), py::arg("local_idx2"),
-            py::arg("pos_body2"), py::arg("length"), py::arg("stiffness"))
+            py::arg("pos_body2"), py::arg("length"), py::arg("stiffness"),
+            py::return_value_policy::reference_internal)
 
 
         .def("get_object", &raisim::World::getObject, R"mydelimiter(
@@ -366,7 +380,8 @@ void init_world(py::module &m) {
 	    Returns:
 	        Object, None: the specified object instance. None, if it didn't find the object.
 	    )mydelimiter",
-	    py::arg("name"))
+	    py::arg("name"),
+	    py::return_value_policy::reference_internal)
 
 
 	    .def("get_constraint", &raisim::World::getConstraint, R"mydelimiter(
@@ -378,7 +393,8 @@ void init_world(py::module &m) {
 	    Returns:
 	        Constraints, None: the specified constraint instance. None, if it didn't find the constraint.
 	    )mydelimiter",
-	    py::arg("name"))
+	    py::arg("name"),
+	    py::return_value_policy::reference_internal)
 
 
 	    .def("get_wire", &raisim::World::getWire, R"mydelimiter(
@@ -390,7 +406,8 @@ void init_world(py::module &m) {
 	    Returns:
 	        Constraints: the specified wire instance. None, if it didn't find the wire.
 	    )mydelimiter",
-	    py::arg("name"))
+	    py::arg("name"),
+	    py::return_value_policy::reference_internal)
 
 
         .def("get_configuration_number", &raisim::World::getConfigurationNumber, R"mydelimiter(

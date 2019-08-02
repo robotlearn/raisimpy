@@ -34,6 +34,7 @@ void setupCallback() {
   vis->getLight()->setDiffuseColour(1, 1, 1);
   vis->getLight()->setCastShadows(true);
   Ogre::Vector3 lightdir(-3,-3,-0.5);
+  vis->getLightNode()->setPosition(3, 3, 3);
   lightdir.normalise();
   vis->getLightNode()->setDirection({lightdir});
   vis->setCameraSpeed(300);
