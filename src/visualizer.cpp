@@ -26,13 +26,15 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>     // automatic conversion between std::vector, std::list, etc to Python list/tuples/dict
 #include <pybind11/eigen.h>   // automatic conversion between Eigen data types to Numpy data types
+#include <pybind11/functional.h>  // functional (this is for callbacks)
 
 #include <iostream>
 
 // include Ogre related headers
-#include "Ogre.h"
-#include "OgreApplicationContext.h"
-#include "OgreInput.h"
+#include "Ogre.h"                      // Basic Ogre classes
+#include "OgreInput.h"                 // Keyboard event
+#include "OgreApplicationContext.h"    // initApp, closeApp, setWindowSize, etc
+
 
 // include Raisim Ogre related headers
 #include "raisim/math.hpp"   // contains the definitions of Vec, Mat, etc.
@@ -75,15 +77,159 @@ using namespace raisim;
 
 void init_visualizer(py::module &m) {
 
-    // create submodule
-    py::module visualizer_module = m.def_submodule("visualizer", "RaiSim visualizer submodule.");
-
+    // create submodules
+//    py::module visualizer_module = m.def_submodule("visualizer", "RaiSim visualizer submodule.");
+    py::module ogre_module = m.def_submodule("ogre", "Ogre submodule");
 
     /********/
     /* Ogre */
     /********/
 
-    py::class_<Ogre::SceneNode>(visualizer_module, "SceneNode",
+    py::enum_<Ogre::ShadowTechnique>(ogre_module, "ShadowTechnique")
+        .value("SHADOWTYPE_NONE", Ogre::ShadowTechnique::SHADOWTYPE_NONE, "No shadows.")
+        .value("SHADOWTYPE_TEXTURE_MODULATIVE", Ogre::ShadowTechnique::SHADOWTYPE_TEXTURE_MODULATIVE,
+            "Texture-based shadow technique which involves a monochrome render-to-texture of the shadow caster and "
+            "a projection of that texture onto the shadow receivers as a modulative pass.")
+        .value("SHADOWTYPE_TEXTURE_ADDITIVE", Ogre::ShadowTechnique::SHADOWTYPE_TEXTURE_ADDITIVE,
+            "Texture-based shadow technique which involves a render-to-texture of the shadow caster and a projection "
+            "of that texture onto the shadow receivers, built up per light as additive passes.");
+    // TODO: add the other ShadowTechnique
+
+    py::class_<OgreBites::Keysym>(ogre_module, "Keysym")
+        .def_readwrite("sym", &OgreBites::Keysym::sym)
+        .def_readwrite("mod", &OgreBites::Keysym::mod);
+
+    py::class_<OgreBites::KeyboardEvent>(ogre_module, "KeyboardEvent")
+        .def_readwrite("type", &OgreBites::KeyboardEvent::type)
+        .def_readwrite("keysym", &OgreBites::KeyboardEvent::keysym)
+        .def_readwrite("repeat", &OgreBites::KeyboardEvent::repeat);
+
+    py::enum_<Ogre::PixelFormat>(ogre_module, "PixelFormat")
+        .value("PF_UNKNOWN", Ogre::PixelFormat::PF_UNKNOWN, "Unknown pixel format.")
+        .value("PF_X8R8G8B8", Ogre::PixelFormat::PF_X8R8G8B8, "32-bit pixel format, 8 bits for red, 8 bits for green, 8 bits for blue.");
+    // TODO: add the other PixelFormat
+
+    // https://www.ogre3d.org/docs/api/1.9/class_ogre_1_1_scene_manager.html
+    py::class_<Ogre::SceneManager>(ogre_module, "SceneManager",
+        "Ogre SceneManager: Manages the organisation and rendering of a 'scene', i.e. a collection of objects and "
+        "potentially world geometry.")
+        .def("set_shadow_technique", &Ogre::SceneManager::setShadowTechnique, R"mydelimiter(
+            Set the shadow technique.
+
+            Args:
+                technique (Ogre.ShadowTechnique): shadow technique.
+            )mydelimiter",
+            py::arg("technique"))
+        .def("set_shadow_texture_settings", &Ogre::SceneManager::setShadowTextureSettings, R"mydelimiter(
+            Set the size and count of textures used in texture-based shadows.
+
+            Args:
+                size (uint16): size.
+                count (uint16): count.
+                format (Ogre.PixelFormat): pixel format (by default, RGB).
+                fsaa (uint16): anti-aliasing.
+                depth_buffer_pool_id (uint16): depth buffer pool id.
+            )mydelimiter",
+            py::arg("size"), py::arg("count"), py::arg("format") = Ogre::PixelFormat::PF_X8R8G8B8, py::arg("fsaa")=0, py::arg("depth_buffer_pool_id")=1)
+        .def("set_shadow_far_distance", &Ogre::SceneManager::setShadowFarDistance, R"mydelimiter(
+            Set the default maximum distance away from the camera that shadows will be visible. You have to call
+            this function before you create lights or the default distance of zero will be used.
+
+            Args:
+                distance (float): distance.
+            )mydelimiter",
+            py::arg("distance"))
+        ;
+
+    py::class_<Ogre::Node> node(ogre_module, "Node", "Ogre Node: Class representing a general-purpose node an articulated scene graph.");
+
+    py::enum_<Ogre::Node::TransformSpace>(node, "TransformSpace")
+        .value("TS_LOCAL", Ogre::Node::TransformSpace::TS_LOCAL, "Transform is relative to the local space")
+        .value("TS_PARENT", Ogre::Node::TransformSpace::TS_PARENT, "Transform is relative to the space of the parent node")
+        .value("TS_WORLD", Ogre::Node::TransformSpace::TS_WORLD, "Transform is relative to world space");
+
+    node.def("get_position", [](Ogre::Node &self) {
+            Ogre::Vector3 vec = self.getPosition();
+            return convert_ogre_vec3_to_np(vec);
+        }, R"mydelimiter(
+            Get the node position.
+
+            Returns:
+                np.array[float[3]]: position vector.
+            )mydelimiter")
+        .def("set_position", py::overload_cast<float, float, float>(&Ogre::Node::setPosition), R"mydelimiter(
+            Set the node position.
+
+            Args:
+                x (float): x position.
+                y (float): y position.
+                z (float): z position.
+            )mydelimiter",
+            py::arg("x"), py::arg("y"), py::arg("z"))
+        .def("set_position", [](Ogre::Node &self, py::array_t<double> &pos) {
+            Ogre::Vector3 vec = convert_np_to_ogre_vec3(pos);
+            self.setPosition(vec);
+        }, R"mydelimiter(
+            Set the node position.
+
+            Args:
+                pos (np.array[float[3]]): position vector.
+            )mydelimiter",
+            py::arg("pos"))
+
+        .def("get_orientation", [](Ogre::Node &self) {
+            Ogre::Quaternion quat = self.getOrientation();
+            return convert_ogre_quat_to_np(quat);
+        }, R"mydelimiter(
+            Get the node orientation (expressed as a quaternion).
+
+            Returns:
+                np.array[float[4]]: quaternion [w,x,y,z].
+            )mydelimiter")
+        .def("set_orientation", [](Ogre::Node &self, py::array_t<double> &quat) {
+            Ogre::Quaternion q = convert_np_to_ogre_quat(quat);
+            self.setOrientation(q);
+        }, R"mydelimiter(
+            Set the node orientation (expressed as a quaternion).
+
+            Args:
+                quat (np.array[float[4]]): quaternion [w,x,y,z].
+            )mydelimiter",
+            py::arg("quat"))
+
+        .def("get_scale", [](Ogre::Node &self) {
+            Ogre::Vector3 vec = self.getScale();
+            return convert_ogre_vec3_to_np(vec);
+        }, R"mydelimiter(
+            Get the node scale.
+
+            Returns:
+                np.array[float[3]]: scale vector.
+            )mydelimiter")
+        .def("set_scale", [](Ogre::Node &self, py::array_t<double> &scale) {
+            Ogre::Vector3 vec = convert_np_to_ogre_vec3(scale);
+            self.setScale(vec);
+        }, R"mydelimiter(
+            Set the node scale.
+
+            Args:
+                scale (np.array[float[3]]): scale vector.
+            )mydelimiter",
+            py::arg("scale"))
+
+        .def("pitch", [](Ogre::Node &self, float angle, Ogre::Node::TransformSpace relative_to) {
+            self.pitch(Ogre::Radian(angle), relative_to);
+        }, R"mydelimiter(
+            Rotate the node around the X-axis.
+
+            Args:
+                angle (float): radian angle.
+                relative_to (TransformSpace): transform space relative to.
+            )mydelimiter",
+            py::arg("angle"), py::arg("relative_to") = Ogre::Node::TransformSpace::TS_LOCAL);
+
+
+    py::class_<Ogre::SceneNode, Ogre::Node>(ogre_module, "SceneNode",
         "Ogre SceneNode: a SceneNode is a logical element of the scene graph hierarchy, which is used to organise "
         "objects in a scene.")
         .def("show_bounding_box", &Ogre::SceneNode::showBoundingBox, R"mydelimiter(
@@ -107,73 +253,13 @@ void init_visualizer(py::module &m) {
                 visible (bool): whether the objects are to be made visible or invisible.
                 cascade (bool): If true, this setting cascades into child nodes too.
             )mydelimiter",
-            py::arg("visible"), py::arg("cascade")=true)
-
-        .def("get_position", [](Ogre::SceneNode &self) {
-            Ogre::Vector3 vec = self.getPosition();
-            return convert_ogre_vec3_to_np(vec);
-        }, R"mydelimiter(
-            Get the node position.
-
-            Returns:
-                np.array[float[3]]: position vector.
-            )mydelimiter")
-        .def("set_position", [](Ogre::SceneNode &self, py::array_t<double> &pos) {
-            Ogre::Vector3 vec = convert_np_to_ogre_vec3(pos);
-            self.setPosition(vec);
-        }, R"mydelimiter(
-            Set the node position.
-
-            Args:
-                pos (np.array[float[3]]): position vector.
-            )mydelimiter",
-            py::arg("pos"))
-
-        .def("get_orientation", [](Ogre::SceneNode &self) {
-            Ogre::Quaternion quat = self.getOrientation();
-            return convert_ogre_quat_to_np(quat);
-        }, R"mydelimiter(
-            Get the node orientation (expressed as a quaternion).
-
-            Returns:
-                np.array[float[4]]: quaternion [w,x,y,z].
-            )mydelimiter")
-        .def("set_orientation", [](Ogre::SceneNode &self, py::array_t<double> &quat) {
-            Ogre::Quaternion q = convert_np_to_ogre_quat(quat);
-            self.setOrientation(q);
-        }, R"mydelimiter(
-            Set the node orientation (expressed as a quaternion).
-
-            Args:
-                quat (np.array[float[4]]): quaternion [w,x,y,z].
-            )mydelimiter",
-            py::arg("quat"))
-
-        .def("get_scale", [](Ogre::SceneNode &self) {
-            Ogre::Vector3 vec = self.getScale();
-            return convert_ogre_vec3_to_np(vec);
-        }, R"mydelimiter(
-            Get the node scale.
-
-            Returns:
-                np.array[float[3]]: scale vector.
-            )mydelimiter")
-        .def("set_scale", [](Ogre::SceneNode &self, py::array_t<double> &scale) {
-            Ogre::Vector3 vec = convert_np_to_ogre_vec3(scale);
-            self.setScale(vec);
-        }, R"mydelimiter(
-            Set the node scale.
-
-            Args:
-                scale (np.array[float[3]]): scale vector.
-            )mydelimiter",
-            py::arg("scale"));
+            py::arg("visible"), py::arg("cascade")=true);
         // add other methods if necessary from:
         // - https://github.com/OGRECave/ogre/blob/master/OgreMain/include/OgreSceneNode.h
         // - https://github.com/OGRECave/ogre/blob/master/OgreMain/include/OgreNode.h
 
 
-    py::class_<Ogre::Light> light(visualizer_module, "Light",
+    py::class_<Ogre::Light> light(ogre_module, "Light",
         "Ogre Light: Lights are added to the scene like any other object. They contain various "
         "parameters like type, position, attenuation (how light intensity fades with distance), colour etc.");
 
@@ -183,11 +269,28 @@ void init_visualizer(py::module &m) {
         .value("LT_SPOTLIGHT", Ogre::Light::LightTypes::LT_SPOTLIGHT, "Spotlights simulate a cone of light from a source so require position and direction, plus extra values for falloff");
 
     light.def(py::init<>(), "Default light constructor")
-        .def(py::init<const std::string &>(), "Normal constructor. Should not be called directly, but rather the SceneManager::createLight method should be used.");
+        .def(py::init<const std::string &>(), "Normal constructor. Should not be called directly, but rather the SceneManager::createLight method should be used.")
+        .def("set_diffuse_color", py::overload_cast<float, float, float>(&Ogre::Light::setDiffuseColour), R"mydelimiter(
+            Sets the colour of the diffuse light given off by this source.
+
+            Args:
+                red (float): red channel value.
+                green (float): green channel value.
+                blue (float): blue channel value.
+            )mydelimiter",
+            py::arg("red"), py::arg("green"), py::arg("blue"))
+        .def("set_cast_shadows", &Ogre::Light::setCastShadows, R"mydelimiter(
+            Sets whether or not this object will cast shadows.
+
+            Args:
+                enabled (bool): enable casting shadows or not.
+            )mydelimiter",
+            py::arg("enabled"))
+        ;
         // add other methods if necessary from https://github.com/OGRECave/ogre/blob/master/OgreMain/include/OgreLight.h
 
 
-    py::class_<Ogre::Viewport>(visualizer_module, "Viewport", "Ogre viewport: An abstraction of a viewport, i.e. a rendering region on a render target.");
+    py::class_<Ogre::Viewport>(ogre_module, "Viewport", "Ogre viewport: An abstraction of a viewport, i.e. a rendering region on a render target.");
 
     // TODO: you can also check the Ogre::Camera class from https://ogrecave.github.io/ogre/api/1.10/class_ogre_1_1_camera.html
     // You can get the projection and view matrix for instance.
@@ -197,7 +300,7 @@ void init_visualizer(py::module &m) {
     /* GraphicObject */
     /*****************/
 
-    py::class_<raisim::GraphicObject>(visualizer_module, "GraphicObject", "Graphic object represents the underlying object.")
+    py::class_<raisim::GraphicObject>(m, "GraphicObject", "Graphic object represents the underlying object.")
         .def(py::init<>(), "Instantiate the Graphic Object by setting its orientation, scale, and offset position.")
         .def_property("pos_offset",
             [](raisim::GraphicObject &self) {  // getter
@@ -231,7 +334,7 @@ void init_visualizer(py::module &m) {
     /* VisualObject */
     /****************/
 
-    py::class_<raisim::VisualObject>(visualizer_module, "VisualObject", "Visual object is for visualization only")
+    py::class_<raisim::VisualObject>(m, "VisualObject", "Visual object is for visualization only")
         .def(py::init<>(), "Instantiate a visual object (by setting its orientation).")
         .def_property("pos_offset",
             [](raisim::VisualObject &self) {  // getter
@@ -262,7 +365,7 @@ void init_visualizer(py::module &m) {
     /* SimAndGraphicsObjectPool */
     /****************************/
 
-    py::class_<raisim::SimAndGraphicsObjectPool>(visualizer_module, "SimAndGraphicsObjectPool", "Sim and graphic object pool.")
+    py::class_<raisim::SimAndGraphicsObjectPool>(m, "SimAndGraphicsObjectPool", "Sim and graphic object pool.")
         .def("set_world", &raisim::SimAndGraphicsObjectPool::setWorld, R"mydelimiter(
             Set the world instance.
 
@@ -304,12 +407,12 @@ void init_visualizer(py::module &m) {
     /* CameraMan */
     /*************/
 
-    py::enum_<raisim::CameraStyle>(visualizer_module, "CameraStyle")
+    py::enum_<raisim::CameraStyle>(m, "CameraStyle")
         .value("CS_FREELOOK", raisim::CameraStyle::CS_FREELOOK)
         .value("CS_ORBIT", raisim::CameraStyle::CS_ORBIT)
         .value("CS_MANUAL", raisim::CameraStyle::CS_MANUAL);
 
-    py::class_<raisim::CameraMan>(visualizer_module, "CameraMan", "Raisim CameraMan")
+    py::class_<raisim::CameraMan>(m, "CameraMan", "Raisim CameraMan")
         .def("update", &raisim::CameraMan::update, "update.")
         .def("manual_stop", &raisim::CameraMan::manualStop, "Manually stops the camera when in free-look mode.")
         .def("set_fixed_yaw", &raisim::CameraMan::setFixedYaw, R"mydelimiter(
@@ -403,7 +506,7 @@ void init_visualizer(py::module &m) {
     /***********/
 
     // py::nodedelete is because the destructor is non-public (it is private because of Singleton pattern)
-    py::class_<raisim::OgreVis, std::unique_ptr<raisim::OgreVis, py::nodelete>> ogre_vis(visualizer_module, "OgreVis", "Raisim Ogre visualizer.");
+    py::class_<raisim::OgreVis, std::unique_ptr<raisim::OgreVis, py::nodelete>> ogre_vis(m, "OgreVis", "Raisim Ogre visualizer.");
 
     py::enum_<raisim::OgreVis::VisualizationGroup>(ogre_vis, "VisualizationGroup")
         .value("RAISIM_OBJECT_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_OBJECT_GROUP)
@@ -483,6 +586,47 @@ void init_visualizer(py::module &m) {
             OgreVis: reference to this class.
         )mydelimiter")
 
+
+        /* CALLBACKS (use of functional) */
+
+        .def("set_imgui_render_callback", &raisim::OgreVis::setImguiRenderCallback, R"mydelimiter(
+        Set imgui render callback. This callback is called for every frame.
+
+        Args:
+            callback (callable): callable void function.
+        )mydelimiter",
+        py::arg("callback"))
+        .def("set_imgui_setup_callback", &raisim::OgreVis::setImguiSetupCallback, R"mydelimiter(
+        Set imgui setup callback. This callback is called only once in setup.
+
+        Args:
+            callback (callable): callable void function.
+        )mydelimiter",
+        py::arg("callback"))
+        .def("set_set_up_callback", &raisim::OgreVis::setSetUpCallback, R"mydelimiter(
+        Set set up callbacks; load custom meshes, materials, anything necessary for setup.
+
+        Args:
+            callback (callable): callable void function.
+        )mydelimiter",
+        py::arg("callback"))
+        .def("set_control_callback", &raisim::OgreVis::setControlCallback, R"mydelimiter(
+        Set control callback.
+
+        Args:
+            callback (callable): callable void function.
+        )mydelimiter",
+        py::arg("callback"))
+        .def("set_keyboard_callback", &raisim::OgreVis::setKeyboardCallback, R"mydelimiter(
+        Set keyboard callback. This callback is called for every keyboard event.
+
+        Args:
+            callback (callable): callable function which accepts as input the KeyboardEvent.
+        )mydelimiter",
+        py::arg("callback"))
+
+
+
         .def("add_resource_directory", &raisim::OgreVis::addResourceDirectory, R"mydelimiter(
             Add resource directory for materials
 
@@ -515,6 +659,13 @@ void init_visualizer(py::module &m) {
 
             Returns:
                 str: resource directory path.
+            )mydelimiter")
+
+        .def("get_scene_manager", &raisim::OgreVis::getSceneManager, R"mydelimiter(
+            Get the Ogre::SceneManager owned by this class.
+
+            Returns:
+                Ogre.SceneManager: the scene manager.
             )mydelimiter")
 
         .def("get_camera_man", &raisim::OgreVis::getCameraMan, R"mydelimiter(
@@ -572,7 +723,7 @@ void init_visualizer(py::module &m) {
                 World: world instance.
             )mydelimiter")
 
-        .def("run", &raisim::OgreVis::startRendering, "run simulation and visualization.")
+        .def("run", &raisim::OgreVis::run, "run simulation and visualization.")
 
         .def("start_rendering", &raisim::OgreVis::startRendering, "start rendering loop without updating simulation.")
 
@@ -789,7 +940,7 @@ void init_visualizer(py::module &m) {
         py::arg("fps"))
 
 
-        .def("set_anti_aliasing", &raisim::OgreVis::setDesiredFPS, R"mydelimiter(
+        .def("set_anti_aliasing", &raisim::OgreVis::setAntiAliasing, R"mydelimiter(
         Set the anti-aliasing.
 
         Args:
@@ -816,7 +967,7 @@ void init_visualizer(py::module &m) {
 
 
         .def("set_contact_visual_object_size", &raisim::OgreVis::setContactVisObjectSize, R"mydelimiter(
-        Set the contact visual object size.
+        Set the contact visual object sizes (for contact points and contact force arrows).
 
         Args:
             point_size (float): point size.
