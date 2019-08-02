@@ -121,8 +121,8 @@ This becomes in Python:
     world.integrate()
 
 
-Other examples can be found in the ``examples`` folder, they are the sames as the ones that you can find in the
-``examples`` folder in ``raisimLib`` [2] or ``raisimOgre`` [3].
+Other examples can be found in the ``examples`` folder, which are the sames as the ones that you can find in the
+``examples`` folders in ``raisimLib`` [2] or ``raisimOgre`` [3].
 
 
 References
