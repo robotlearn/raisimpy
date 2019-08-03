@@ -28,7 +28,7 @@ import raisimpy as raisim
 def setup_callback():
     vis = raisim.OgreVis.get()
 
-    # # light
+    # light
     light = vis.get_light()
     light.set_diffuse_color(1, 1, 1)
     light.set_cast_shadows(True)
@@ -58,8 +58,8 @@ def setup_callback():
 if __name__ == '__main__':
     # create raisim world
     world = raisim.World()
-    world.set_time_step(0.003)
-    world.set_erp(world.get_time_step(), world.get_time_step())
+    world.set_time_step(0.001)
+    world.set_erp(0.5, 0.)
 
     # start visualizer thread
 
@@ -74,8 +74,6 @@ if __name__ == '__main__':
 
     # init
     vis.init_app()
-
-    # vis = raisim.OgreVis(world)  # You could have called this instead of writing lines [66-75]
 
     # create raisim objects
     ground = world.add_ground()
@@ -101,7 +99,7 @@ if __name__ == '__main__':
 
     wires = []
     for i in range(4):
-        wire = world.add_stiff_wire(object1=pins[i], local_idx1=0, pos_body1=np.zeros(3),
+        wire = world.add_stiff_wire(object1=pins[i], local_idx1=0, pos_body1=[0., 0., 0.],
                                     object2=balls[i], local_idx2=0, pos_body2=np.zeros(3), length=2.)
         vis.create_graphical_object(wire, "wire" + str(i + 1), "red")
 
@@ -112,8 +110,6 @@ if __name__ == '__main__':
     camera = vis.get_camera_man().get_camera()
     camera.set_position(0, 3.5, 1.5)
     camera.pitch(1.2)
-    print(visual_pins)
-    print(visual_pins[0])
     vis.select(visual_pins[0][0])  # highlight selected object
 
     # run the app

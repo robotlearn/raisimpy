@@ -33,3 +33,7 @@
 
 # build
 build/
+
+# pycharm / clion
+.idea/
+

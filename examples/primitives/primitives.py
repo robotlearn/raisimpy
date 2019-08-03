@@ -27,7 +27,7 @@ import raisimpy as raisim
 def setup_callback():
     vis = raisim.OgreVis.get()
 
-    # # light
+    # light
     light = vis.get_light()
     light.set_diffuse_color(1, 1, 1)
     light.set_cast_shadows(True)
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # init
     vis.init_app()
 
-    # vis = raisim.OgreVis(world)  # You could have called this instead of writing lines [66-75]
+    # vis = raisim.OgreVis(world)  # You could have called this instead of writing lines [65-75]
 
     # create raisim objects
     ground = world.add_ground()

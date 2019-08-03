@@ -38,7 +38,7 @@ namespace py = pybind11;
 
 /// \brief: convert from raisim::Vec<n> to np.array
 template<size_t n>
-py::array_t<double> convert_vec_to_np(raisim::Vec<n> &vec) {
+py::array_t<double> convert_vec_to_np(const raisim::Vec<n> &vec) {
     const double *ptr = vec.ptr();  // get data pointer
 
     // return np.array[float64[n]]
@@ -95,7 +95,7 @@ py::array_t<double> convert_mat_to_np(const raisim::Mat<n, m> &mat) {
 
 /// \brief: convert from np.array[float[n,m]] to raisim::Mat<n,m>
 template<size_t n, size_t m>
-raisim::Mat<n, m> convert_np_to_mat(py::array_t<double> &array) {
+raisim::Mat<n, m> convert_np_to_mat(const py::array_t<double> &array) {
 
     // check dimensions and shape
     if (array.ndim() != 2) {
@@ -137,7 +137,7 @@ py::array_t<double> convert_matdyn_to_np(const raisim::MatDyn &mat);
 
 
 /// \brief: convert from np.array[float[n,m]] to raisim::MatDyn
-raisim::MatDyn convert_np_to_matdyn(py::array_t<double> &array);
+raisim::MatDyn convert_np_to_matdyn(const py::array_t<double> &array);
 
 
 /// \brief: convert from raisim::Transformation to np.array[float[4,4]]
@@ -145,7 +145,7 @@ py::array_t<double> convert_transformation_to_np(const raisim::Transformation &t
 
 
 /// \brief: convert from np.array[float[4,4]] to raisim::Transformation
-raisim::Transformation convert_np_to_transformation(py::array_t<double> &array);
+raisim::Transformation convert_np_to_transformation(const py::array_t<double> &array);
 
 
 /// \brief: convert from Eigen::Quaterniond to np.array[float[4]]
@@ -185,7 +185,7 @@ py::array_t<double> convert_ogre_mat3_to_np(const Ogre::Matrix3 &mat);
 
 
 /// \brief: convert from np.array[float[3,3]] to Ogre::Matrix3
-Ogre::Matrix3 convert_np_to_ogre_mat3(py::array_t<double> &array);
+Ogre::Matrix3 convert_np_to_ogre_mat3(const py::array_t<double> &array);
 
 
 /// \brief: convert from Ogre::Matrix4 to np.array[float[4,4]]
@@ -193,7 +193,7 @@ py::array_t<double> convert_ogre_mat4_to_np(const Ogre::Matrix4 &mat);
 
 
 /// \brief: convert from np.array[float[4,4]] to Ogre::Matrix4
-Ogre::Matrix4 convert_np_to_ogre_mat4(py::array_t<double> &array);
+Ogre::Matrix4 convert_np_to_ogre_mat4(const py::array_t<double> &array);
 
 
 #endif

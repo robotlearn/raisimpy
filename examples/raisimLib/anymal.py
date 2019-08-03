@@ -41,7 +41,7 @@ joint_d_gain = np.zeros(18)
 joint_p_gain[-12:] = 200.
 joint_d_gain[-12] = 10.
 
-anymal = sim.add_articulated_system(os.path.dirname(os.path.abspath(__file__)) + "/../rsc/ANYmal/robot.urdf")
+anymal = sim.add_articulated_system(os.path.dirname(os.path.abspath(__file__)) + "/../rsc/ANYmal/anymal.urdf")
 anymal.set_states(joint_config, joint_vel)
 anymal.set_control_mode(raisim.ControlMode.PD_PLUS_FEEDFORWARD_TORQUE)
 anymal.set_pd_gains(joint_p_gain, joint_d_gain)

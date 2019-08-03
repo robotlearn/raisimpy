@@ -73,6 +73,12 @@ void init_ogre(py::module &m) {
         .def_readwrite("keysym", &OgreBites::KeyboardEvent::keysym)
         .def_readwrite("repeat", &OgreBites::KeyboardEvent::repeat);
 
+//    py::enum_<OgreBites>(ogre_module)
+//        .value("SDLK_RETURN", OgreBites::SDLK_RETURN);
+
+//    py::module abc = ogre_module.def_submodule("ogrebites", "OgreBites submodule");
+//    abc.attr("SDLK_RETURN") = &OgreBites::SDLK_RETURN;
+
 
     /***************/
     /* PixelFormat */
@@ -83,10 +89,21 @@ void init_ogre(py::module &m) {
     // TODO: add the other PixelFormat
 
 
+    /************************/
+    /* ResourceGroupManager */
+    /************************/
+    py::class_<Ogre::ResourceGroupManager>(ogre_module, "ResourceGroupManager")
+        .def_readonly_static("DEFAULT_RESOURCE_GROUP_NAME", &Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)
+        .def_readonly_static("INTERNAL_RESOURCE_GROUP_NAME", &Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME)
+        .def_readonly_static("AUTODETECT_RESOURCE_GROUP_NAME", &Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME)
+        .def_readonly_static("RESOURCE_SYSTEM_NUM_REFERENCE_COUNTS", &Ogre::ResourceGroupManager::RESOURCE_SYSTEM_NUM_REFERENCE_COUNTS);
+
+
     /****************/
     /* SceneManager */
     /****************/
-    // https://www.ogre3d.org/docs/api/1.9/class_ogre_1_1_scene_manager.html
+    // documentation: https://www.ogre3d.org/docs/api/1.9/class_ogre_1_1_scene_manager.html
+    // github repo: https://github.com/OGRECave/ogre/blob/master/OgreMain/include/OgreSceneManager.h
     py::class_<Ogre::SceneManager>(ogre_module, "SceneManager",
         "Ogre SceneManager: Manages the organisation and rendering of a 'scene', i.e. a collection of objects and "
         "potentially world geometry.")
@@ -116,6 +133,24 @@ void init_ogre(py::module &m) {
                 distance (float): distance.
             )mydelimiter",
             py::arg("distance"))
+        .def("set_skybox", [](Ogre::SceneManager &self, bool enable, const std::string &material_name, float distance,
+            bool render_queue, py::array_t<double> &orientation, const std::string &group_name) {
+                Ogre::Quaternion quat = convert_np_to_ogre_quat(orientation);
+                self.setSkyBox(enable, material_name, distance, render_queue, quat, group_name);
+        }, R"mydelimiter(
+            Set the default maximum distance away from the camera that shadows will be visible. You have to call
+            this function before you create lights or the default distance of zero will be used.
+
+            Args:
+                enable (bool): if we should enable the skybox.
+                material_name (str): material name.
+                distance (float): distance from the scene.
+                render_queue (bool): if we should render the queue.
+                orientation (np.array[float[4]]): orientation expressed as a quaternion [w,x,y,z].
+                group_name (str): the group name.
+            )mydelimiter",
+            py::arg("enable"), py::arg("material_name"), py::arg("distance"), py::arg("render_queue"),
+            py::arg("orientation"), py::arg("group_name") = Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME)
         ;
 
 
@@ -275,6 +310,25 @@ void init_ogre(py::module &m) {
                 enabled (bool): enable casting shadows or not.
             )mydelimiter",
             py::arg("enabled"))
+        .def("set_direction", py::overload_cast<float, float, float>(&Ogre::Light::setDirection), R"mydelimiter(
+            Sets the light direction.
+
+            Args:
+                x (float): x component of the direction vector.
+                y (float): y component of the direction vector.
+                z (float): z component of the direction vector.
+            )mydelimiter",
+            py::arg("x"), py::arg("y"), py::arg("z"))
+        .def("set_direction", [](Ogre::Light &self, py::array_t<double> &direction) {
+            Ogre::Vector3 vec = convert_np_to_ogre_vec3(direction);
+            self.setDirection(vec);
+        }, R"mydelimiter(
+            Sets the light direction.
+
+            Args:
+                direction (np.array[float[3]]): direction vector.
+            )mydelimiter",
+            py::arg("direction"))
         ;
         // add other methods if necessary from https://github.com/OGRECave/ogre/blob/master/OgreMain/include/OgreLight.h
 

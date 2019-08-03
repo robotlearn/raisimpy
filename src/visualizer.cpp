@@ -576,7 +576,7 @@ void init_visualizer(py::module &m) {
                 name (str): name of the sphere.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("sphere"), py::arg("name"), py::arg("material"),
+            py::arg("sphere"), py::arg("name"), py::arg("material") = "default",
             py::return_value_policy::reference_internal)
 
 
@@ -590,7 +590,7 @@ void init_visualizer(py::module &m) {
                 name (str): name of the ground.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("ground"), py::arg("dimension"), py::arg("name"), py::arg("material"),
+            py::arg("ground"), py::arg("dimension"), py::arg("name"), py::arg("material") = "default",
             py::return_value_policy::reference_internal)
 
 
@@ -603,7 +603,7 @@ void init_visualizer(py::module &m) {
                 name (str): name of the box.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("box"), py::arg("name"), py::arg("material"),
+            py::arg("box"), py::arg("name"), py::arg("material") = "default",
             py::return_value_policy::reference_internal)
 
 
@@ -616,7 +616,7 @@ void init_visualizer(py::module &m) {
                 name (str): name of the cylinder.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("cylinder"), py::arg("name"), py::arg("material"),
+            py::arg("cylinder"), py::arg("name"), py::arg("material") = "default",
             py::return_value_policy::reference_internal)
 
 
@@ -642,7 +642,7 @@ void init_visualizer(py::module &m) {
                 name (str): name of the capsule.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("capsule"), py::arg("name"), py::arg("material"),
+            py::arg("capsule"), py::arg("name"), py::arg("material") = "default",
             py::return_value_policy::reference_internal)
 
 
