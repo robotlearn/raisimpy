@@ -1,7 +1,7 @@
 RaiSimPy: Python wrapper for RaiSim
 ===================================
 
-This folder contains a python wrapper around RaiSim (``raisimLib`` and ``raisimOgre``) using ``pybind11``.
+This folder contains python wrappers around RaiSim (``raisimLib`` and ``raisimOgre``) using ``pybind11``.
 
 Small parts of the wrappers were inspired by the code given in the ``raisimGym/raisim_gym/env/`` folder. 
 If you use these wrappers, please acknowledge their contribution as well by citing [1-4].
@@ -53,7 +53,7 @@ Now, you can finally compile the python wrappers from the ``raisimpy`` folder by
 
 where ``$PYTHON_VERSION`` is the Python version you wish to use (e.g. ``PYTHON_VERSION=3.5``).
 
-Now, you just need to ``export PYTHONPATH=$PYTHONPATH:$LOCAL_BUILD/lib`` to be able to access to the python library. You can 
+Now, you just need to ``export PYTHONPATH=$PYTHONPATH:$LOCAL_BUILD/lib`` to be able to access the python library. You can 
 add this ``export`` line in your ``bashrc``.
 
 Once it has been compiled, you can access to the Python library ``raisimpy`` in your code with:
@@ -189,7 +189,8 @@ Troubleshooting
 
 - Segmentation fault. This is probably an oversight on my part, the error is probably due to some poor management 
   of pointers and memory allocation. E.g. an object has been deleted from the Python side but the C++ side is also 
-  trying to delete it.
+  trying to delete it. Just open an issue on Github, and I will fix it as soon as I can. If you fixed it, you can 
+  submit a pull request.
 
 
 LICENSE
