@@ -1,5 +1,5 @@
-Python wrapper for RaiSim
-=========================
+RaiSimPy: Python wrapper for RaiSim
+===================================
 
 This folder contains a python wrapper around RaiSim (``raisimLib`` and ``raisimOgre``) using ``pybind11``.
 
