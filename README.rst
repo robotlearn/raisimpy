@@ -6,6 +6,9 @@ This folder contains a python wrapper around RaiSim (``raisimLib`` and ``raisimO
 Small parts of the wrappers were inspired by the code given in the ``raisimGym/raisim_gym/env/`` folder. 
 If you use these wrappers, please acknowledge their contribution as well by citing [1-4].
 
+The following wrappers have been tested on Ubuntu 16.04 with Python 3.5. Other platforms and Python 
+versions might work as well but we didn't test them yet.
+
 
 How to use the wrappers?
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,10 +24,18 @@ environment variables defined:
 - WORKSPACE: workspace where you clone your git repos (e.g., ~/raisim_workspace)
 - LOCAL_BUILD: build directory where you install exported cmake libraries (e.g., ~/raisim_build)
 
+First, clone this repository:
 
-Before compiling the code in this repo, you will have to move or copy the `extras` folder (that you can find in this
-repo) in the `$LOCAL_BUILD/include/ode/` folder. This `extras` folder contains some missing header files for ODE which
-are necessary in order, for instance, to load meshes with Raisim. This can be done by:
+.. code-block:: bash
+
+    cd $WORKSPACE
+    git clone https://github.com/robotlearn/raisimpy
+    cd raisimpy
+
+
+Before compiling the code in this repo, you will have to move or copy the ``extras`` folder (that you can find in this
+repo) in the ``$LOCAL_BUILD/include/ode/`` folder. This ``extras`` folder contains some missing header files for ODE 
+which are necessary in order, for instance, to load meshes with Raisim. This can be done by:
 
 .. code-block:: bash
 
@@ -70,7 +81,7 @@ becomes
 
 Note that in the original ``raisimLib``, the authors sometimes use their own defined data types for vectors and
 matrices (such as ``Vec<n>``, ``Mat<n,m>``, ``VecDyn``, ``MatDyn``, etc). When using the python wrappers, these
-datatypes are converted back and forth to numpy arrays as this is the standard in Python.
+datatypes are automatically converted (back and forth) to numpy arrays as this is the standard in Python.
 We also follow the conventions that if an attribute is a python list or std::vector, we add an 's' at the end of the
 attribute, and we write the full name of the variables (i.e. without using diminutives), such as:
 
@@ -122,7 +133,8 @@ This becomes in Python:
 
 
 Other examples can be found in the ``examples`` folder, which are the sames as the ones that you can find in the
-``examples`` folders in ``raisimLib`` [2] or ``raisimOgre`` [3].
+``examples`` folders in ``raisimLib`` [2] or ``raisimOgre`` [3]. I will add the other examples as soon as I have 
+the time.
 
 
 References
@@ -174,6 +186,14 @@ Troubleshooting
     preventing Python to close properly (with pybind11).
 
 
+LICENSE
+~~~~~~~
+
+The following software is distributed under the `MIT <https://choosealicense.com/licenses/mit/>`_ License, 
+however the RaiSim software is under the End-User License Agreement that you can find 
+`here <https://github.com/leggedrobotics/raisimLib/blob/master/LICENSE.md>`_.
+
+
 Citation
 ~~~~~~~~
 
@@ -208,3 +228,4 @@ Otherwise, you can just add me in the acknowledgements ;)
 
 If you use ``raisimpy`` through the `pyrobolearn <https://github.com/robotlearn/pyrobolearn>`_ framework (this is an
 ongoing work), you can cite this last one instead (but you still have to cite the authors of Raisim).
+

@@ -84,7 +84,7 @@ sudo apt-get install libyaml-cpp-dev
 git clone https://github.com/leggedrobotics/raisimLib
 git clone https://github.com/leggedrobotics/raisimOgre
 git clone https://github.com/leggedrobotics/raisimGym
-git clone https://github.com/bdelhaisse/raisimpy
+git clone https://github.com/robotlearn/raisimpy
 
 # build raisimLib
 cd $RAISIM_WORKSPACE/raisimLib
@@ -128,8 +128,8 @@ make install -j4
 cd $RAISIM_WORKSPACE/raisimpy
 cp -r extras $RAISIM_BUILD/include/ode/
 mkdir build && cd build
-cmake -DPYBIND11_PYTHON_VERSION=$PYTHON_VERSION -DCMAKE_PREFIX_PATH=$RAISIM_BUILD ..
-make
+cmake -DPYBIND11_PYTHON_VERSION=$PYTHON_VERSION -DCMAKE_PREFIX_PATH=$RAISIM_BUILD -DCMAKE_INSTALL_PREFIX=$RAISIM_BUILD ..
+make install -j4
 
 
 # write variables to export in the ~/.bashrc file, and source it
