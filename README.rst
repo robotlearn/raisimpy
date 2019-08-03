@@ -65,7 +65,7 @@ Once it has been compiled, you can access to the Python library ``raisimpy`` in 
     print(dir(raisim))
 
 
-We follow mostly the naming convention defined in ``raisimLib`` and ``raisimOgre``, however we follow the PEP8 guideline.
+We mostly follow the naming convention defined in ``raisimLib`` and ``raisimOgre``, however we follow the PEP8 guideline.
 Thus, a C++ method like:
 
 .. code-block:: cpp
@@ -80,10 +80,10 @@ becomes
 
 
 Note that in the original ``raisimLib``, the authors sometimes use their own defined data types for vectors and
-matrices (such as ``Vec<n>``, ``Mat<n,m>``, ``VecDyn``, ``MatDyn``, etc). The Ogre library for is used for the 
+matrices (such as ``Vec<n>``, ``Mat<n,m>``, ``VecDyn``, ``MatDyn``, etc). The Ogre library used for the 
 visualization also uses its own defined data types (such as ``Vector3``, ``Matrix3``, ``Quaternion``, etc). 
 When using ``raisimpy``, these datatypes are automatically converted (back and forth) to numpy arrays as this 
-is the standard in Python. We also follow the conventions that if an attribute is a python list or std::vector, 
+is the standard in Python. We also follow the convention that if an attribute is a python list or std::vector, 
 we add the suffix 's' at the end of the attribute, and we write the full name of the variables (i.e. without 
 using diminutives), such as:
 
@@ -98,6 +98,18 @@ in C++, becomes in Python:
 
     b = Body()
     shapes = b.collision_shapes  # no diminutives (colshape --> collision_shape), and added the 's' suffix to specify it is a list.
+
+
+The code has been documented, so you can always see it using `help` or `?`, for instance:
+
+.. code-block:: python
+
+    import raisimpy as raisim
+    
+    world = raisim.World()
+    world.add_sphere?
+    # or
+    help(world.add_sphere)
 
 
 Examples
