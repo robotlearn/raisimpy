@@ -42,7 +42,7 @@ which are necessary in order, for instance, to load meshes with Raisim. This can
     cp -r extras $LOCAL_BUILD/include/ode/
 
 
-Now, you can finally compile the python wrappers from the ``raisim_wrapper`` folder by typing:
+Now, you can finally compile the python wrappers from the ``raisimpy`` folder by typing:
 
 .. code-block:: bash
 
@@ -56,7 +56,7 @@ where ``$PYTHON_VERSION`` is the Python version you wish to use (e.g. ``PYTHON_V
 Now, you just need to ``export PYTHONPATH=$PYTHONPATH:$LOCAL_BUILD/lib`` to be able to access to the python library. You can 
 add this ``export`` line in your ``bashrc``.
 
-Once it has been compiled, you can access to the Python library ``raisim`` in your code with:
+Once it has been compiled, you can access to the Python library ``raisimpy`` in your code with:
 
 .. code-block:: python
 
@@ -80,10 +80,12 @@ becomes
 
 
 Note that in the original ``raisimLib``, the authors sometimes use their own defined data types for vectors and
-matrices (such as ``Vec<n>``, ``Mat<n,m>``, ``VecDyn``, ``MatDyn``, etc). When using the python wrappers, these
-datatypes are automatically converted (back and forth) to numpy arrays as this is the standard in Python.
-We also follow the conventions that if an attribute is a python list or std::vector, we add an 's' at the end of the
-attribute, and we write the full name of the variables (i.e. without using diminutives), such as:
+matrices (such as ``Vec<n>``, ``Mat<n,m>``, ``VecDyn``, ``MatDyn``, etc). The Ogre library for is used for the 
+visualization also uses its own defined data types (such as ``Vector3``, ``Matrix3``, ``Quaternion``, etc). 
+When using ``raisimpy``, these datatypes are automatically converted (back and forth) to numpy arrays as this 
+is the standard in Python. We also follow the conventions that if an attribute is a python list or std::vector, 
+we add the suffix 's' at the end of the attribute, and we write the full name of the variables (i.e. without 
+using diminutives), such as:
 
 .. code-block:: cpp
 
@@ -94,7 +96,7 @@ in C++, becomes in Python:
 
 .. code-block:: python
 
-    Body b
+    b = Body()
     shapes = b.collision_shapes  # no diminutives (colshape --> collision_shape), and added the 's' suffix to specify it is a list.
 
 
@@ -184,6 +186,10 @@ Troubleshooting
 
     You couldn't close the window because ``OgreVis`` would keep a reference to the Python callback functions, 
     preventing Python to close properly (with pybind11).
+
+- Segmentation fault. This is probably an oversight on my part, the error is probably due to some poor management 
+  of pointers and memory allocation. E.g. an object has been deleted from the Python side but the C++ side is also 
+  trying to delete it.
 
 
 LICENSE
