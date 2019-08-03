@@ -110,7 +110,7 @@ if __name__ == '__main__':
     joint_d_gain = np.zeros(18)
 
     joint_p_gain[-12:] = 200.
-    joint_d_gain[-12] = 10.
+    joint_d_gain[-12:] = 10.
 
     anymal_graphics = vis.create_graphical_object(anymal, name="ANYmal")
     anymal.set_generalized_coordinates([0, 0, 3.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4, -0.8, -0.03, 0.4, -0.8, 0.03,

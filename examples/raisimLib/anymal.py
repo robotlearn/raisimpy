@@ -37,7 +37,7 @@ joint_p_gain = np.zeros(18)
 joint_d_gain = np.zeros(18)
 
 joint_p_gain[-12:] = 200.
-joint_d_gain[-12] = 10.
+joint_d_gain[-12:] = 10.
 
 anymal = sim.add_articulated_system(os.path.dirname(os.path.abspath(__file__)) + "/../rsc/ANYmal/anymal.urdf")
 anymal.set_states(joint_config, joint_vel)

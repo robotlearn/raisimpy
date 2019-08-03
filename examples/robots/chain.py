@@ -35,9 +35,7 @@ def setup_callback():
     light = vis.get_light()
     light.set_diffuse_color(1, 1, 1)
     light.set_cast_shadows(True)
-    light_node = vis.get_light_node()
-    light_dir = normalize([-3., -3., -0.5])
-    light_node.set_direction(light_dir)
+    vis.get_light_node().set_direction(normalize([-3., -3., -0.5]))
     vis.set_camera_speed(300)
 
     # load textures
