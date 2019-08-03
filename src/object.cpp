@@ -78,12 +78,34 @@ void init_object(py::module &m) {
 	// Object class (from include/raisim/object/Object.hpp)
 	py::class_<raisim::Object>(object_module, "Object", "Raisim Object from which all other objects/bodies inherit from.")
 	    .def_property("name", &raisim::Object::getName, &raisim::Object::setName)
-	    .def("get_name", &raisim::Object::getName, "Get the object's name.")
-	    .def("set_name", &raisim::Object::setName, "Set the object's name.", py::arg("name"))
+	    .def("get_name", &raisim::Object::getName, R"mydelimiter(
+	    Get the object's name.
+
+	    Returns:
+	        str: object's name.
+	    )mydelimiter")
+	    .def("set_name", &raisim::Object::setName, R"mydelimiter(
+	    Set the object's name.
+
+	    Args:
+	        name (str): object's name.
+	    )mydelimiter",
+	    py::arg("name"))
 	    .def("clear_per_object_contact", &raisim::Object::clearPerObjectContact)
 	    .def("add_contact_to_per_object_contact", &raisim::Object::addContactToPerObjectContact, py::arg("contact"))
-	    .def("set_index_in_world", &raisim::Object::setIndexInWorld, py::arg("index"))
-	    .def("get_index_in_world", &raisim::Object::getIndexInWorld)
+	    .def("set_index_in_world", &raisim::Object::setIndexInWorld, R"mydelimiter(
+	    Set the object index in the world.
+
+	    Args:
+	        index (int): object index.
+	    )mydelimiter",
+	    py::arg("index"))
+	    .def("get_index_in_world", &raisim::Object::getIndexInWorld, R"mydelimiter(
+	    Get the object index in the world.
+
+	    Args:
+	        int: object index in the world.
+	    )mydelimiter")
 	    .def("get_contacts", py::overload_cast<>(&raisim::Object::getContacts))
 	    .def("get_contacts", py::overload_cast<>(&raisim::Object::getContacts, py::const_))
 	    .def("update_collision", &raisim::Object::updateCollision, "Update the collisions.")
@@ -212,6 +234,6 @@ void init_object(py::module &m) {
 	init_articulated_system(object_module, m);
 
 	// raisim.object.terrain
-	init_terrain(object_module);
+	init_terrain(m);
 
 }

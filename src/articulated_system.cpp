@@ -1492,6 +1492,14 @@ void init_articulated_system(py::module &m, py::module &main_module) {
         )mydelimiter")
 
 
+        .def("get_dof", &raisim::ArticulatedSystem::getDOF, R"mydelimiter(
+        Return the number of degrees of freedom.
+
+        Returns:
+            int: the number of degrees of freedom.
+        )mydelimiter")
+
+
         .def("get_generalized_coordinate_dim", &raisim::ArticulatedSystem::getGeneralizedCoordinateDim, R"mydelimiter(
         Return the dimension/size of the generalized coordinates vector.
 

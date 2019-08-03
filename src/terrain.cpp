@@ -74,9 +74,10 @@ void init_terrain(py::module &m) {
         "    fractal_gain (float): fractal gain.\n"
         "    step_size (float): the step size.\n"
         "    seed (int): the random seed.",
-        py::arg("frequency"), py::arg("x_size"), py::arg("y_size"), py::arg("z_scale"), py::arg("x_samples"),
-        py::arg("y_samples"), py::arg("fractal_octaves"), py::arg("fractal_lacunarity"), py::arg("fractal_gain"),
-        py::arg("step_size"), py::arg("seed"))
+        py::arg("frequency") = 0.1, py::arg("x_size") = 10., py::arg("y_size") = 10., py::arg("z_scale") = 2.,
+        py::arg("x_samples") = 100, py::arg("y_samples") = 100, py::arg("fractal_octaves") = 5,
+        py::arg("fractal_lacunarity") = 2., py::arg("fractal_gain") = 0.5, py::arg("step_size") = 0,
+        py::arg("seed") = std::default_random_engine::default_seed)
 
         .def_readwrite("frequency", &raisim::TerrainProperties::frequency)
         .def_readwrite("x_size", &raisim::TerrainProperties::xSize)

@@ -37,3 +37,6 @@ build/
 # pycharm / clion
 .idea/
 
+# Ogre
+imgui.ini
+
