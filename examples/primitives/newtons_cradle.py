@@ -15,10 +15,8 @@ __copyright__ = "Copyright (c), 2019 Robotic Systems Lab, ETH Zurich"
 __credits__ = ["Robotic Systems Lab, ETH Zurich + Hwangbo (C++ example code)",
                "Brian Delhaisse (Python wrapper + Python example)"]
 __license__ = "MIT"
-__version__ = "1.0.0"
 __maintainer__ = "Brian Delhaisse"
 __email__ = "briandelhaisse@gmail.com"
-__status__ = "Development"
 
 
 import numpy as np
@@ -86,7 +84,7 @@ if __name__ == '__main__':
         pin = world.add_sphere(radius=0.1, mass=0.8)
         pin.set_position(i * 0.3, 0., 3.)
         pin.set_body_type(raisim.BodyType.STATIC)
-        visual_pin = vis.create_graphical_object(pin, "pin" + str(i + 1), "lawn_green")
+        visual_pin = vis.create_graphical_object(pin, name="pin" + str(i + 1), material="lawn_green")
         pins.append(pin)
         visual_pins.append(visual_pin)
 
@@ -101,10 +99,10 @@ if __name__ == '__main__':
     for i in range(4):
         wire = world.add_stiff_wire(object1=pins[i], local_idx1=0, pos_body1=[0., 0., 0.],
                                     object2=balls[i], local_idx2=0, pos_body2=np.zeros(3), length=2.)
-        vis.create_graphical_object(wire, "wire" + str(i + 1), "red")
+        vis.create_graphical_object(wire, name="wire" + str(i + 1), material="red")
 
     # create visualizer objects
-    vis.create_graphical_object(ground, 20, "floor", "default")
+    vis.create_graphical_object(ground, dimension=20, name="floor", material="default")
 
     # set camera
     camera = vis.get_camera_man().get_camera()

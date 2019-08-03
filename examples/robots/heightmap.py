@@ -15,10 +15,8 @@ __copyright__ = "Copyright (c), 2019 Robotic Systems Lab, ETH Zurich"
 __credits__ = ["Robotic Systems Lab, ETH Zurich + Hwangbo (C++ example code)",
                "Brian Delhaisse (Python wrapper + Python example)"]
 __license__ = "MIT"
-__version__ = "1.0.0"
 __maintainer__ = "Brian Delhaisse"
 __email__ = "briandelhaisse@gmail.com"
-__status__ = "Development"
 
 
 import os
@@ -97,9 +95,9 @@ if __name__ == '__main__':
     heightmap = world.add_heightmap(x_center=0., y_center=0., terrain_properties=terrain_properties)
 
     # create visualizer objects
-    vis.create_graphical_object(heightmap, "terrain", "default")
-    vis.create_graphical_object(sphere1, "sphere1", "gravel")
-    vis.create_graphical_object(sphere2, "sphere2", "default")
+    vis.create_graphical_object(heightmap, name="terrain", material="default")
+    vis.create_graphical_object(sphere1, name="sphere1", material="gravel")
+    vis.create_graphical_object(sphere2, name="sphere2", material="default")
 
     # ANYmal joint PD controller
     joint_nominal_config = np.array([0, 0, 0, 0, 0, 0, 0, 0.03, 0.4, -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03,
@@ -114,12 +112,12 @@ if __name__ == '__main__':
     joint_p_gain[-12:] = 200.
     joint_d_gain[-12] = 10.
 
-    anymal_graphics = vis.create_graphical_object(anymal, "ANYmal")
+    anymal_graphics = vis.create_graphical_object(anymal, name="ANYmal")
     anymal.set_generalized_coordinates([0, 0, 3.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4, -0.8, -0.03, 0.4, -0.8, 0.03,
                                         -0.4, 0.8, -0.03, -0.4, 0.8])
 
     vis.select(anymal_graphics[0], False)
-    vis.get_camera_man().set_yaw_pitch_dist(0., -np.pi/4., 3)
+    vis.get_camera_man().set_yaw_pitch_dist(0., -np.pi/4., 1)
     anymal.set_generalized_forces(np.zeros(anymal.get_dof()))
     anymal.set_control_mode(raisim.ControlMode.PD_PLUS_FEEDFORWARD_TORQUE)
     anymal.set_pd_gains(joint_p_gain, joint_d_gain)

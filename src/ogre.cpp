@@ -273,7 +273,61 @@ void init_ogre(py::module &m) {
                 visible (bool): whether the objects are to be made visible or invisible.
                 cascade (bool): If true, this setting cascades into child nodes too.
             )mydelimiter",
-            py::arg("visible"), py::arg("cascade")=true);
+            py::arg("visible"), py::arg("cascade")=true)
+
+        .def("set_direction", [](Ogre::SceneNode &self, float x, float y, float z, Ogre::Node::TransformSpace
+                relative_to, py::array_t<double> &local_direction) {
+
+                    // provide value by default for local_direction if not specified
+                    Ogre::Vector3 local_dir;
+                    if (local_direction.size() != 3)
+                        local_dir = Ogre::Vector3(0., 0., -1.);
+                    else
+                        local_dir = convert_np_to_ogre_vec3(local_direction);
+
+                    self.setDirection(x, y, z, relative_to, local_dir);
+
+            }, R"mydelimiter(
+            Sets the light direction.
+
+            Args:
+                x (float): x component of the direction vector.
+                y (float): y component of the direction vector.
+                z (float): z component of the direction vector.
+                relative_to (Ogre.Node.TransformSpace): the space in which this direction vector is expressed.
+                local_direction (np.array[float[3]]): The vector which normally describes the natural direction of the
+                    node, usually -Z (=[0., 0., -1]).
+            )mydelimiter",
+            py::arg("x"), py::arg("y"), py::arg("z"), py::arg("relative_to") = Ogre::Node::TransformSpace::TS_LOCAL,
+            py::arg("local_direction") = nullptr)
+
+        .def("set_direction", [](Ogre::SceneNode &self, py::array_t<double> &direction, Ogre::Node::TransformSpace
+                relative_to, py::array_t<double> &local_direction) {
+
+            Ogre::Vector3 vec = convert_np_to_ogre_vec3(direction);
+
+            // provide value by default for local_direction if not specified
+            Ogre::Vector3 local_dir;
+            if (local_direction.size() != 3)
+                local_dir = Ogre::Vector3(0., 0., -1.);
+            else
+                local_dir = convert_np_to_ogre_vec3(local_direction);
+
+            self.setDirection(vec, relative_to, local_dir);
+
+        }, R"mydelimiter(
+            Sets the light direction.
+
+            Args:
+                direction (np.array[float[3]]): direction vector.
+                relative_to (Ogre.Node.TransformSpace): the space in which this direction vector is expressed.
+                local_direction (np.array[float[3]]): The vector which normally describes the natural direction of the
+                    node, usually -Z (=[0., 0., -1]).
+            )mydelimiter",
+            py::arg("direction"), py::arg("relative_to") = Ogre::Node::TransformSpace::TS_LOCAL,
+            py::arg("local_direction") = nullptr)
+
+        ;
         // add other methods if necessary from:
         // - https://github.com/OGRECave/ogre/blob/master/OgreMain/include/OgreSceneNode.h
         // - https://github.com/OGRECave/ogre/blob/master/OgreMain/include/OgreNode.h

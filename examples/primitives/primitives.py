@@ -15,10 +15,8 @@ __copyright__ = "Copyright (c), 2019 Robotic Systems Lab, ETH Zurich"
 __credits__ = ["Robotic Systems Lab, ETH Zurich + Hwangbo (C++ example code)",
                "Brian Delhaisse (Python wrapper + Python example)"]
 __license__ = "MIT"
-__version__ = "1.0.0"
 __maintainer__ = "Brian Delhaisse"
 __email__ = "briandelhaisse@gmail.com"
-__status__ = "Development"
 
 
 import raisimpy as raisim
@@ -89,25 +87,25 @@ if __name__ == '__main__':
 
                 if res == 0:
                     cubes.append(world.add_box(1, 1, 1, 1))
-                    vis.create_graphical_object(cubes[-1], "cube" + number, "red")
+                    vis.create_graphical_object(cubes[-1], name="cube" + number, material="red")
                     ob = cubes[-1]
                 elif res == 1:
                     spheres.append(world.add_sphere(0.5, 1))
-                    vis.create_graphical_object(spheres[-1], "sphere" + number, "green")
+                    vis.create_graphical_object(spheres[-1], name="sphere" + number, material="green")
                     ob = spheres[-1]
                 elif res == 2:
                     capsules.append(world.add_capsule(0.5, 1., 1))
-                    vis.create_graphical_object(capsules[-1], "capsule" + number, "blue")
+                    vis.create_graphical_object(capsules[-1], name="capsule" + number, material="blue")
                     ob = capsules[-1]
                 else:
                     cylinders.append(world.add_cylinder(0.5, 0.5, 1))
-                    vis.create_graphical_object(cylinders[-1], "cylinder" + number, "default")
+                    vis.create_graphical_object(cylinders[-1], name="cylinder" + number, material="default")
                     ob = cylinders[-1]
 
                 ob.set_position(-N + 2. * i, -N + 2. * j, N * 2. + 2. * k)
 
     # create visualizer objects
-    vis.create_graphical_object(ground, 20, "floor", "default")
+    vis.create_graphical_object(ground, dimension=20, name="floor", material="default")
 
     # set camera
     camera = vis.get_camera_man().get_camera()
