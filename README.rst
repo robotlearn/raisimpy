@@ -100,7 +100,7 @@ in C++, becomes in Python:
     shapes = b.collision_shapes  # no diminutives (colshape --> collision_shape), and added the 's' suffix to specify it is a list.
 
 
-The code has been documented, so you can always see it using `help` or `?`, for instance:
+The code has been documented, so you can always see it using ``help`` or ``?``, for instance:
 
 .. code-block:: python
 
