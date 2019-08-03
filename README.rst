@@ -234,7 +234,7 @@ If the code presented here was useful to you, we would appreciate if you could c
 
 If you still have some space in your paper for the references, you can add the following citation:
 
-.. code-block::
+.. code-block:: latex
 
     @misc{delhaisse2019raisimpy
         author = {Delhaisse, Brian},
