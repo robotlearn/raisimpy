@@ -56,7 +56,7 @@ namespace py = pybind11;
 using namespace raisim;
 
 
-void init_articulated_system(py::module &m, py::module &main_module) {
+void init_articulated_system(py::module &m) { // py::module &main_module) {
 
 
     /****************/
@@ -76,7 +76,7 @@ void init_articulated_system(py::module &m, py::module &main_module) {
     /***************/
     /* ControlMode */
     /***************/
-    py::enum_<raisim::ControlMode::Type>(main_module, "ControlMode", py::arithmetic())
+    py::enum_<raisim::ControlMode::Type>(m, "ControlMode", py::arithmetic())
         .value("FORCE_AND_TORQUE", raisim::ControlMode::Type::FORCE_AND_TORQUE)
         .value("PD_PLUS_FEEDFORWARD_TORQUE", raisim::ControlMode::Type::PD_PLUS_FEEDFORWARD_TORQUE)
         .value("VELOCITY_PLUS_FEEDFORWARD_TORQUE", raisim::ControlMode::Type::VELOCITY_PLUS_FEEDFORWARD_TORQUE);

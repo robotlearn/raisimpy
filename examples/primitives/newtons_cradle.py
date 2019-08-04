@@ -95,6 +95,8 @@ if __name__ == '__main__':
         vis.create_graphical_object(ball, "ball" + str(i + 1), material)
         balls.append(ball)
 
+    balls[-1].set_position(2.9, 0., 3.)
+
     wires = []
     for i in range(4):
         wire = world.add_stiff_wire(object1=pins[i], local_idx1=0, pos_body1=[0., 0., 0.],

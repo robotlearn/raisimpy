@@ -35,14 +35,14 @@ using namespace raisim;
 
 
 void init_single_bodies(py::module &);
-void init_articulated_system(py::module &, py::module &);
+void init_articulated_system(py::module &);  // , py::module &);
 void init_terrain(py::module &);
 
 
 void init_object(py::module &m) {
 
     // create submodule
-    py::module object_module = m.def_submodule("object", "RaiSim object submodule.");
+//    py::module object_module = m.def_submodule("object", "RaiSim object submodule.");
 
 
     /**************/
@@ -76,7 +76,7 @@ void init_object(py::module &m) {
 	/* Object */
 	/**********/
 	// Object class (from include/raisim/object/Object.hpp)
-	py::class_<raisim::Object>(object_module, "Object", "Raisim Object from which all other objects/bodies inherit from.")
+	py::class_<raisim::Object>(m, "Object", "Raisim Object from which all other objects/bodies inherit from.")
 	    .def_property("name", &raisim::Object::getName, &raisim::Object::setName)
 	    .def("get_name", &raisim::Object::getName, R"mydelimiter(
 	    Get the object's name.
@@ -228,12 +228,12 @@ void init_object(py::module &m) {
 
 
 	// raisim.object.singleBodies
-	init_single_bodies(object_module);
+	init_single_bodies(m);  // object_module
 
 	// raisim.object.ArticulatedSystem
-	init_articulated_system(object_module, m);
+	init_articulated_system(m);  // object_module
 
 	// raisim.object.terrain
-	init_terrain(m);
+	init_terrain(m);  // object_module
 
 }

@@ -50,7 +50,7 @@
 #include "converter.hpp"
 
 namespace py = pybind11;
-using namespace raisim;
+//using namespace raisim;
 
 
 void init_ogre(py::module &m);
@@ -76,6 +76,9 @@ void init_ogre(py::module &m);
 //    MouseWheelCallback mouseWheelCallback_ = nullptr;
 //};
 
+class gui { // dummy class for the namespace
+};
+
 
 void init_visualizer(py::module &m) {
 
@@ -91,12 +94,45 @@ void init_visualizer(py::module &m) {
     /************/
     /* GuiState */
     /************/
-    py::module gui_module = m.def_submodule("gui", "RaiSim GUI state.");
-    gui_module.attr("manual_stepping") = false;
-    gui_module.attr("show_bodies") = true;
-    gui_module.attr("show_collisions") = false;
-    gui_module.attr("show_contacts") = false;
-    gui_module.attr("show_forces") = false;
+    py::class_<gui>(m, "gui", "RaiSim gui state.")
+        .def_property_static("manual_stepping",
+            [](py::object) {
+                return raisim::gui::manualStepping;
+            }, [](py::object, bool stepping) {
+                raisim::gui::manualStepping = stepping;
+            })
+        .def_property_static("show_bodies",
+            [](py::object) {
+                return raisim::gui::showBodies;
+            }, [](py::object, bool show) {
+                raisim::gui::showBodies = show;
+            })
+        .def_property_static("show_collisions",
+            [](py::object) {
+                return raisim::gui::showCollision;
+            }, [](py::object, bool show) {
+                raisim::gui::showCollision = show;
+            })
+        .def_property_static("show_contacts",
+            [](py::object) {
+                return raisim::gui::showContacts;
+            }, [](py::object, bool show) {
+                raisim::gui::showContacts = show;
+            })
+        .def_property_static("show_forces",
+            [](py::object) {
+                return raisim::gui::showForces;
+            }, [](py::object, bool show) {
+                raisim::gui::showForces = show;
+            })
+        ;
+
+//    py::module gui_module = m.def_submodule("gui", "RaiSim GUI state.");
+//    gui_module.attr("manual_stepping") = false;
+//    gui_module.attr("show_bodies") = true;
+//    gui_module.attr("show_collisions") = false;
+//    gui_module.attr("show_contacts") = false;
+//    gui_module.attr("show_forces") = false;
 
 
     /*****************/
@@ -109,21 +145,21 @@ void init_visualizer(py::module &m) {
             [](raisim::GraphicObject &self) {  // getter
                 return convert_vec_to_np(self.offset);
             }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
-                Vec<3> pos = convert_np_to_vec<3>(array);
+                raisim::Vec<3> pos = convert_np_to_vec<3>(array);
                 self.offset = pos;
             })
         .def_property("scale",
             [](raisim::GraphicObject &self) {  // getter
                 return convert_vec_to_np(self.scale);
             }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
-                Vec<3> scale = convert_np_to_vec<3>(array);
+                raisim::Vec<3> scale = convert_np_to_vec<3>(array);
                 self.scale = scale;
             })
         .def_property("rotation_offset",
             [](raisim::GraphicObject &self) {  // getter
                 return convert_mat_to_np(self.rotationOffset);
             }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
-                Mat<3,3> rot = convert_np_to_mat<3,3>(array);
+                raisim::Mat<3,3> rot = convert_np_to_mat<3,3>(array);
                 self.rotationOffset = rot;
             })
         .def_readwrite("local_id", &raisim::GraphicObject::localId)
@@ -143,21 +179,21 @@ void init_visualizer(py::module &m) {
             [](raisim::VisualObject &self) {  // getter
                 return convert_vec_to_np(self.offset);
             }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
-                Vec<3> pos = convert_np_to_vec<3>(array);
+                raisim::Vec<3> pos = convert_np_to_vec<3>(array);
                 self.offset = pos;
             })
         .def_property("scale",
             [](raisim::VisualObject &self) {  // getter
                 return convert_vec_to_np(self.scale);
             }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
-                Vec<3> scale = convert_np_to_vec<3>(array);
+                raisim::Vec<3> scale = convert_np_to_vec<3>(array);
                 self.scale = scale;
             })
         .def_property("rotation_offset",
             [](raisim::VisualObject &self) {  // getter
                 return convert_mat_to_np(self.rotationOffset);
             }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
-                Mat<3,3> rot = convert_np_to_mat<3,3>(array);
+                raisim::Mat<3,3> rot = convert_np_to_mat<3,3>(array);
                 self.rotationOffset = rot;
             })
         .def_readwrite("name", &raisim::VisualObject::name)
@@ -195,7 +231,7 @@ void init_visualizer(py::module &m) {
             )mydelimiter",
             py::arg("name"))
 
-        .def("erase", py::overload_cast<Object*>(&raisim::SimAndGraphicsObjectPool::erase), R"mydelimiter(
+        .def("erase", py::overload_cast<raisim::Object*>(&raisim::SimAndGraphicsObjectPool::erase), R"mydelimiter(
             Erase the specified object from the world.
 
             Args:
