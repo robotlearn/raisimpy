@@ -49,7 +49,15 @@ void init_visualizer(py::module &);
 // to Python.
 PYBIND11_MODULE(raisimpy, m) {
 
+    // add meta information
 	m.doc() = "Python wrappers for the RaiSim library and visualizer."; // docstring for the module
+	m.attr("__license__") = "MIT";
+	py::list authors;
+	authors.append("Jemin Hwangbo (raisim)");
+	authors.append("Donho Kang (raisim)");
+	authors.append("Joonho Lee (raisim)");
+	authors.append("Brian Delhaisse (raisimpy)");
+	m.attr("__authors__") = authors;
 
     /*******/
     /* Ode */

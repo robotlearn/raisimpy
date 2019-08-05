@@ -887,7 +887,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
             self.getState(gc, gv);
 
-            return gc, gv;
+            return py::make_tuple(gc, gv);
         }, R"mydelimiter(
         Get the joint states.
 

@@ -300,7 +300,7 @@ void init_visualizer(py::module &m) {
                 dist (float): distance from target.
                 track_objects_yaw (bool): if True, tracks object yaw.
             )mydelimiter",
-            py::arg("yaw"), py::arg("pitch"), py::arg("dist"), py::arg("track_objects_yaw") = false)
+            py::arg("yaw"), py::arg("pitch"), py::arg("dist"), py::arg("track") = false)
 
         .def("get_camera", &raisim::CameraMan::getCamera, R"mydelimiter(
             Get the camera scene node.

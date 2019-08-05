@@ -15,8 +15,6 @@ __copyright__ = "Copyright (c), 2019 Robotic Systems Lab, ETH Zurich"
 __credits__ = ["Robotic Systems Lab, ETH Zurich + Hwangbo (C++ example code)",
                "Brian Delhaisse (Python wrapper + Python example)"]
 __license__ = "MIT"
-__maintainer__ = "Brian Delhaisse"
-__email__ = "briandelhaisse@gmail.com"
 
 
 import os

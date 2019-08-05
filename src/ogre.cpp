@@ -37,6 +37,34 @@
 
 namespace py = pybind11;
 
+//enum OgreBites_pybind11 {  // this is for pybind11, enum must have names...
+//    SDLK_RETURN = int('\r'),
+//    SDLK_ESCAPE = int('\033'),
+//    SDLK_SPACE = int(' '),
+//    SDLK_F1 = (1 << 30) | 58,
+//    SDLK_F2,
+//    SDLK_F3,
+//    SDLK_F4,
+//    SDLK_F5,
+//    SDLK_F6,
+//    SDLK_F7,
+//    SDLK_F8,
+//    SDLK_F9,
+//    SDLK_F10,
+//    SDLK_F11,
+//    SDLK_F12,
+//    SDLK_PAGEUP = (1 << 30) | 75,
+//    SDLK_PAGEDOWN = (1 << 30) | 78,
+//    SDLK_RIGHT = (1 << 30) | 79,
+//    SDLK_LEFT,
+//    SDLK_DOWN,
+//    SDLK_UP,
+//    SDLK_KP_MINUS = (1 << 30) | 86,
+//    SDLK_KP_PLUS,
+//    SDLK_LSHIFT = (1 << 30) | 225,
+//    KMOD_CTRL = 0x0040 | 0x0080,
+//};
+
 
 void init_ogre(py::module &m) {
 
@@ -72,6 +100,34 @@ void init_ogre(py::module &m) {
         .def_readwrite("type", &OgreBites::KeyboardEvent::type)
         .def_readwrite("keysym", &OgreBites::KeyboardEvent::keysym)
         .def_readwrite("repeat", &OgreBites::KeyboardEvent::repeat);
+
+//    py::enum_<OgreBites_pybind11>(ogre_module, "OgreBites")
+//        .value('SDLK_RETURN', OgreBites_pybind11::SDLK_RETURN)
+//        .value('SDLK_ESCAPE', OgreBites_pybind11::SDLK_ESCAPE)
+//        .value('SDLK_SPACE', OgreBites_pybind11::SDLK_SPACE)
+//        .value('SDLK_F1', OgreBites_pybind11::SDLK_F1)
+//        .value('SDLK_F2', OgreBites_pybind11::SDLK_F2)
+//        .value('SDLK_F3', OgreBites_pybind11::SDLK_F3)
+//        .value('SDLK_F4', OgreBites_pybind11::SDLK_F4)
+//        .value('SDLK_F5', OgreBites_pybind11::SDLK_F5)
+//        .value('SDLK_F6', OgreBites_pybind11::SDLK_F6)
+//        .value('SDLK_F7', OgreBites_pybind11::SDLK_F7)
+//        .value('SDLK_F8', OgreBites_pybind11::SDLK_F8)
+//        .value('SDLK_F9', OgreBites_pybind11::SDLK_F9)
+//        .value('SDLK_F10', OgreBites_pybind11::SDLK_F10)
+//        .value('SDLK_F11', OgreBites_pybind11::SDLK_F11)
+//        .value('SDLK_F12', OgreBites_pybind11::SDLK_F12)
+//        .value('SDLK_PAGEUP', OgreBites_pybind11::SDLK_PAGEUP)
+//        .value('SDLK_PAGEDOWN', OgreBites_pybind11::SDLK_PAGEDOWN)
+//        .value('SDLK_RIGHT', OgreBites_pybind11::SDLK_RIGHT)
+//        .value('SDLK_LEFT', OgreBites_pybind11::SDLK_LEFT)
+//        .value('SDLK_DOWN', OgreBites_pybind11::SDLK_DOWN)
+//        .value('SDLK_UP', OgreBites_pybind11::SDLK_UP)
+//        .value('SDLK_KP_MINUS', OgreBites_pybind11::SDLK_KP_MINUS)
+//        .value('SDLK_KP_PLUS', OgreBites_pybind11::SDLK_KP_PLUS)
+//        .value('SDLK_LSHIFT', OgreBites_pybind11::SDLK_LSHIFT)
+//        .value('KMOD_CTRL', OgreBites_pybind11::KMOD_CTRL);
+
 
 //    py::enum_<OgreBites>(ogre_module)
 //        .value("SDLK_RETURN", OgreBites::SDLK_RETURN);
