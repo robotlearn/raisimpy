@@ -93,6 +93,7 @@ void init_object(py::module &m) {
 	    py::arg("name"))
 	    .def("clear_per_object_contact", &raisim::Object::clearPerObjectContact)
 	    .def("add_contact_to_per_object_contact", &raisim::Object::addContactToPerObjectContact, py::arg("contact"))
+
 	    .def("set_index_in_world", &raisim::Object::setIndexInWorld, R"mydelimiter(
 	    Set the object index in the world.
 
@@ -100,14 +101,27 @@ void init_object(py::module &m) {
 	        index (int): object index.
 	    )mydelimiter",
 	    py::arg("index"))
+
 	    .def("get_index_in_world", &raisim::Object::getIndexInWorld, R"mydelimiter(
 	    Get the object index in the world.
 
-	    Args:
+	    Returns:
 	        int: object index in the world.
 	    )mydelimiter")
-	    .def("get_contacts", py::overload_cast<>(&raisim::Object::getContacts))
-	    .def("get_contacts", py::overload_cast<>(&raisim::Object::getContacts, py::const_))
+
+	    .def("get_contacts", py::overload_cast<>(&raisim::Object::getContacts), R"mydelimiter(
+	    Get the list of contact points.
+
+	    Returns:
+	        list[Contact]: list of contact points.
+	    )mydelimiter")
+	    .def("get_contacts", py::overload_cast<>(&raisim::Object::getContacts, py::const_), R"mydelimiter(
+	    Get the list of contact points.
+
+	    Returns:
+	        list[Contact]: list of contact points.
+	    )mydelimiter")
+
 	    .def("update_collision", &raisim::Object::updateCollision, "Update the collisions.")
 	    .def("pre_contact_solver_update1", [](raisim::Object &self, py::array_t<double> gravity, double dt) {
 	        // convert np.array[3] to Vec<3>

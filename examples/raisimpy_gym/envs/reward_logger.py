@@ -7,12 +7,13 @@ References:
     - [1] https://github.com/leggedrobotics/raisimGym/blob/master/raisim_gym/env/RewardLogger.hpp
 """
 
+import raisimpy as raisim
+
 __author__ = ["Jemin Hwangbo (C++)", "Brian Delhaisse (Python)"]
 __copyright__ = "Copyright (c), 2019 Robotic Systems Lab, ETH Zurich"
 __credits__ = ["Robotic Systems Lab, ETH Zurich + Hwangbo (C++ example code)"]
 __license__ = "MIT"
 
-import raisimpy as raisim
 
 class RewardLogger(object):
 

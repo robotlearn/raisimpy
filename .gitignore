@@ -36,7 +36,14 @@ build/
 
 # pycharm / clion
 .idea/
+__pycache__/
 
 # Ogre
 imgui.ini
+
+# data
+data/
+
+# egg
+*egg-info/
 

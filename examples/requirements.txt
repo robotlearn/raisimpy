@@ -1,0 +1,4 @@
+
+numpy
+gym>=0.2.3
+stable_baselines>=2.5.1
