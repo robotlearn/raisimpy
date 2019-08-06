@@ -4,7 +4,7 @@
 This is the same example as provided in [1], but translated into Python and using the `raisimpy` library (which
 is a wrapper around `raisimLib` [2] and `raisimOgre` [3]).
 
-Note that in this class, we use a callable class which is given to the `set_control_callback` function.
+Note that in this example, we use a callable class which is given to the `set_control_callback` function.
 
 References:
     - [1] https://github.com/leggedrobotics/raisimOgre/blob/master/examples/src/robots/anymal.cpp
