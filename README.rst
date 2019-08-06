@@ -147,8 +147,8 @@ This becomes in Python:
 
 
 Other examples can be found in the ``examples`` folder, which are the sames as the ones that you can find in the
-``examples`` folders in ``raisimLib`` [2] or ``raisimOgre`` [3]. I will add the other examples as soon as I have 
-the time.
+``examples`` folders in ``raisimLib`` [2], ``raisimOgre`` [3], and ``raisimGym`` [4]. I will add the other examples
+as soon as I have the time.
 
 
 References
@@ -197,12 +197,22 @@ Troubleshooting
         }
 
     You couldn't close the window because ``OgreVis`` would keep a reference to the Python callback functions, 
-    preventing Python to close properly (with pybind11).
+    preventing Python to close properly (with ``pybind11``).
 
 - Segmentation fault. This is probably an oversight on my part, the error is probably due to some poor management 
   of pointers and memory allocation. E.g. an object has been deleted from the Python side but the C++ side is also 
   trying to delete it. Just open an issue on Github, and I will fix it as soon as I can. If you fixed it, you can 
   submit a pull request.
+
+- Error about adress mapping while running RL examples, like the following one:
+
+    .. code-block:: bash
+
+        Signal: Segmentation fault (11)
+        Signal code: Address not mapped (1)
+        Failing at address: xxxxx
+
+    this seems to be caused by TensorFlow, but I have to investigate deeper what causes that error.
 
 
 LICENSE
@@ -246,5 +256,5 @@ If you still have some space in your paper for the references, you can add the f
 Otherwise, you can just add me in the acknowledgements ;)
 
 If you use ``raisimpy`` through the `pyrobolearn <https://github.com/robotlearn/pyrobolearn>`_ framework (this is an
-ongoing work), you can cite this last one instead (but you still have to cite the authors of Raisim).
+ongoing work), you can cite this last one instead (but you still have to cite the authors of RaiSim).
 
