@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8.9)
 project (raisim_wrapper)
 
 # find the various packages
-find_package(pybind11 REQUIRED)
+find_package(pybind11 CONFIG 2.3 REQUIRED)
 find_package(Eigen3 REQUIRED eigen3)
 # find_package(OpenMP REQUIRED)
 find_package(raisim CONFIG REQUIRED)
@@ -22,7 +22,7 @@ include_directories(include ${EIGEN3_INCLUDE_DIRS})
 file(GLOB SOURCES "src/*.cpp")
 
 pybind11_add_module(raisimpy ${SOURCES})
-target_link_libraries(raisimpy raisim::raisim raisim::raisimOgre)
+target_link_libraries(raisimpy PRIVATE raisim::raisim raisim::raisimOgre)
 
 install (TARGETS raisimpy DESTINATION lib)
 # Don't forget to export PYTHONPATH=$PYTHONPATH:$LOCAL_BUILD/lib
