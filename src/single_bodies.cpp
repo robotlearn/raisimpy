@@ -101,7 +101,7 @@ void init_single_bodies(py::module &m) {
 	    )mydelimiter")
 
 
-	    .def("get_position", &raisim::SingleBodyObject::getPosition, R"mydelimiter(
+	    .def("get_position", py::overload_cast<>(&raisim::SingleBodyObject::getPosition), R"mydelimiter(
 	    Get the body's position with respect to the world frame.
 
 	    Returns:
@@ -117,7 +117,7 @@ void init_single_bodies(py::module &m) {
 	    )mydelimiter")
 
 
-	    .def("get_linear_velocity", &raisim::SingleBodyObject::getLinearVelocity, R"mydelimiter(
+	    .def("get_linear_velocity", py::overload_cast<>(&raisim::SingleBodyObject::getLinearVelocity), R"mydelimiter(
 	    Get the body's linear velocity with respect to the world frame.
 
 	    Returns:
@@ -125,7 +125,7 @@ void init_single_bodies(py::module &m) {
 	    )mydelimiter")
 
 
-	    .def("get_angular_velocity", &raisim::SingleBodyObject::getAngularVelocity, R"mydelimiter(
+	    .def("get_angular_velocity", py::overload_cast<>(&raisim::SingleBodyObject::getAngularVelocity), R"mydelimiter(
 	    Get the body's angular velocity position with respect to the world frame.
 
 	    Returns:
@@ -134,7 +134,7 @@ void init_single_bodies(py::module &m) {
 
 
         // this is the same as get_position
-        .def("get_world_position", &raisim::SingleBodyObject::getPosition, R"mydelimiter(
+        .def("get_world_position", py::overload_cast<>(&raisim::SingleBodyObject::getPosition), R"mydelimiter(
 	    Get the body's position with respect to the world frame.
 
 	    Returns:

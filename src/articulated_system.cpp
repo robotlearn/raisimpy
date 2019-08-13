@@ -1068,7 +1068,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
         .def("get_world_position", [](raisim::ArticulatedSystem &self, size_t body_idx, py::array_t<double> body_point) {
             Vec<3> pos;
             Vec<3> body_pos = convert_np_to_vec<3>(body_point);
-            self.getPosition_W(body_idx, body_pos, pos);
+            self.getPosition(body_idx, body_pos, pos);
             return convert_vec_to_np(pos);
         }, R"mydelimiter(
         Get the body's position with respect to the world frame.
@@ -1136,7 +1136,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
           Frames are attached to the joint position */
         .def("get_frame_world_position", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Vec<3> vec;
-            self.getFramePosition_W(frame_id, vec);
+            self.getFramePosition(frame_id, vec);
             return convert_vec_to_np(vec);
         }, R"mydelimiter(
         Get the frame position expressed in the Cartesian world frame.
@@ -1152,7 +1152,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_frame_world_rotation_matrix", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Mat<3, 3> mat;
-            self.getFrameOrientation_W(frame_id, mat);
+            self.getFrameOrientation(frame_id, mat);
             return convert_mat_to_np(mat);
         }, R"mydelimiter(
         Get the frame orientation as a rotation matrix expressed in the Cartesian world frame
@@ -1168,7 +1168,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_frame_world_quaternion", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Mat<3, 3> mat;
-            self.getFrameOrientation_W(frame_id, mat);
+            self.getFrameOrientation(frame_id, mat);
             Vec<4> quat;
             rotMatToQuat(mat, quat);
             return convert_vec_to_np(quat);
@@ -1186,7 +1186,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_frame_linear_velocity", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Vec<3> vec;
-            self.getFrameVelocity_W(frame_id, vec);
+            self.getFrameVelocity(frame_id, vec);
             return convert_vec_to_np(vec);
         }, R"mydelimiter(
         Get the frame linear velocity expressed in the Cartesian world frame.
@@ -1202,7 +1202,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_frame_angular_velocity", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Vec<3> vec;
-            self.getFrameVelocity_W(frame_id, vec);
+            self.getFrameVelocity(frame_id, vec);
             return convert_vec_to_np(vec);
         }, R"mydelimiter(
         Get the frame angular velocity expressed in the Cartesian world frame.
@@ -1218,7 +1218,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_world_position", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Vec<3> pos;
-            self.getPosition_W(frame_id, pos);
+            self.getPosition(frame_id, pos);
             return convert_vec_to_np(pos);
         }, R"mydelimiter(
         Get the joint frame's position with respect to the world frame.
@@ -1234,7 +1234,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_world_rotation_matrix", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Mat<3, 3> rot;
-            self.getFrameOrientation_W(frame_id, rot);
+            self.getFrameOrientation(frame_id, rot);
             return convert_mat_to_np(rot);
         }, R"mydelimiter(
         Get the joint frame's orientation (expressed as a rotation matrix) with respect to the world frame.
@@ -1250,7 +1250,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_world_quaternion", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Mat<3, 3> rot;
-            self.getFrameOrientation_W(frame_id, rot);
+            self.getFrameOrientation(frame_id, rot);
             Vec<4> quat;
             rotMatToQuat(rot, quat);
             return convert_vec_to_np(quat);
@@ -1268,7 +1268,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_world_linear_velocity", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Vec<3> vel;
-            self.getVelocity_W(frame_id, vel);
+            self.getVelocity(frame_id, vel);
             return convert_vec_to_np(vel);
         }, R"mydelimiter(
         Get the joint frame's linear velocity with respect to the world frame.
@@ -1287,7 +1287,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
             MatDyn mat = convert_np_to_matdyn(jacobian);
             jac.v = mat;
             Vec<3> vel;
-            self.getVelocity_W(jac, vel);
+            self.getVelocity(jac, vel);
             return convert_vec_to_np(vel);
         }, R"mydelimiter(
         Return the velocity of the point of the sparse linear jacobian.
@@ -1305,7 +1305,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
                 py::array_t<double> body_pos) {
             Vec<3> pos = convert_np_to_vec<3>(body_pos);
             Vec<3> vel;
-            self.getVelocity_W(body_id, pos, vel);
+            self.getVelocity(body_id, pos, vel);
             return convert_vec_to_np(vel);
         }, R"mydelimiter(
         Return the velocity of a point (expressed in the body frame) in the world frame.
@@ -1322,7 +1322,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_world_angular_velocity", [](raisim::ArticulatedSystem &self, size_t body_id) {
             Vec<3> vel;
-            self.getAngularVelocity_W(body_id, vel);
+            self.getAngularVelocity(body_id, vel);
             return convert_vec_to_np(vel);
         }, R"mydelimiter(
         Get the angular velocity of the body with respect to the world frame.

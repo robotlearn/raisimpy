@@ -253,9 +253,11 @@ class AnymalEnv(RaisimGymEnv):
 
     def is_terminal_state(self):
         # if the contact body is not the foot, the episode is over
+        self.done = False
         for contact in self.robot.get_contacts():
             if contact.get_local_body_index() not in self.foot_indices:
                 self.done = True
+
         return self.done
 
     def set_seed(self, seed=None):

@@ -170,7 +170,7 @@ void init_object(py::module &m) {
 
 	    .def("get_world_position", [](raisim::Object &self, size_t local_idx) {
 	        Vec<3> pos;
-	        self.getPosition_W(local_idx, pos);
+	        self.getPosition(local_idx, pos);
 	        // convert vec<3> to np.array[3]
 	        return convert_vec_to_np(pos);
 	    }, R"mydelimiter(
@@ -187,7 +187,7 @@ void init_object(py::module &m) {
 
 	    .def("get_world_linear_velocity", [](raisim::Object &self, size_t local_idx) {
 	        Vec<3> vel;
-	        self.getVelocity_W(local_idx, vel);
+	        self.getVelocity(local_idx, vel);
 	        return convert_vec_to_np(vel);
 	    }, R"mydelimiter(
 	    Get the world linear velocity.
@@ -203,7 +203,7 @@ void init_object(py::module &m) {
 
 	    .def("get_world_rotation_matrix", [](raisim::Object &self, size_t local_idx) {
 	        Mat<3,3> rot;
-	        self.getOrientation_W(local_idx, rot);
+	        self.getOrientation(local_idx, rot);
 	        return convert_mat_to_np(rot);
 	    }, R"mydelimiter(
 	    Get the world orientation as a rotation matrix.
@@ -220,7 +220,7 @@ void init_object(py::module &m) {
 	    .def("get_world_position", [](raisim::Object &self, size_t local_idx, py::array_t<double> body_pos) {
 	        Vec<3> pos_b =convert_np_to_vec<3>(body_pos);
 	        Vec<3> pos;
-	        self.getPosition_W(local_idx, pos_b, pos);
+	        self.getPosition(local_idx, pos_b, pos);
 	        return convert_vec_to_np(pos);
 	     })
 	    .def("get_body_type", py::overload_cast<size_t>(&raisim::Object::getBodyType, py::const_))
