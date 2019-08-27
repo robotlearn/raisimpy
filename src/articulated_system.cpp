@@ -686,19 +686,6 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
         py::arg("name"), py::arg("names"))
 
 
-        .def("init_collision_bodies", &raisim::Child::initCollisionBodies, R"mydelimiter(
-        Initialize the visual objects.
-
-        Args:
-            collisions (list[CollisionDefinition]): list of collision definitions.
-            visual_objects (list[VisObject]): list of visualization objects.
-            space (dSpaceID): collision space.
-            meshes (list[Mesh]): list of meshes.
-            resource_directory (str): resource directory.
-        )mydelimiter",
-        py::arg("collisions"), py::arg("visual_objects"), py::arg("space"), py::arg("meshes"), py::arg("resource_directory"))
-
-
         .def("init_visuals", &raisim::Child::initVisuals, R"mydelimiter(
         Initialize the visual objects.
 

@@ -564,13 +564,6 @@ void init_single_bodies(py::module &m) {
 	/********/
 	// Cone class (from include/raisim/object/singleBodies/Cone.hpp)
 	py::class_<raisim::Cone, raisim::SingleBodyObject>(m, "Cone", "Raisim Cone.")
-	    .def(py::init<double, double, double>(),
-	    "Initialize a cone.\n\n"
-	    "Args:\n"
-	    "    radius (float): radius of the cone.\n"
-	    "    height (float): height of the cone.\n"
-	    "    mass (float): mass of the cone.",
-	    py::arg("radius"), py::arg("height"), py::arg("mass"))
 	    .def("get_radius", &raisim::Cone::getRadius, R"mydelimiter(
 	    Get the cone's radius.
 
@@ -590,13 +583,6 @@ void init_single_bodies(py::module &m) {
     /************/
     // Cylinder class (from include/raisim/object/singleBodies/Cylinder.hpp)
 	py::class_<raisim::Cylinder, raisim::SingleBodyObject>(m, "Cylinder", "Raisim Cylinder.")
-	    .def(py::init<double, double, double>(),
-	    "Initialize a cylinder.\n\n"
-	    "Args:\n"
-	    "    radius (float): radius of the cylinder.\n"
-	    "    height (float): height of the cylinder.\n"
-	    "    mass (float): mass of the cylinder.",
-	    py::arg("radius"), py::arg("height"), py::arg("mass"))
 	    .def("get_radius", &raisim::Cylinder::getRadius, R"mydelimiter(
 	    Get the cylinder's radius.
 
@@ -616,46 +602,19 @@ void init_single_bodies(py::module &m) {
     /********/
     // Mesh class (from include/raisim/object/singleBodies/Mesh.hpp)
 	py::class_<raisim::Mesh, raisim::SingleBodyObject>(m, "Mesh", "Raisim Mesh.")
+        .def("get_file_name", &raisim::Mesh::getMeshFileName, R"mydelimiter(
+	    Get the mesh's full path.
 
-	    .def(py::init<const std::string&, dSpaceID>(),
-	    "Initialize a Mesh.\n\n"
-	    "Args:\n"
-	    "    filename (str): path to the mesh file.\n"
-	    "    space (dSpaceID): collision space.",
-	    py::arg("filename"), py::arg("space"))
-
-
-	    .def(py::init([](const std::string& filename, dSpaceID space, double mass, py::array_t<double> inertia,
-	        py::array_t<double> com) {
-	        // convert np to Mat<3,3> and Vec<3>
-	        Mat<3, 3> I = convert_np_to_mat<3, 3>(inertia);
-	        Vec<3> pos = convert_np_to_vec<3>(com);
-            return new Mesh(filename, space, mass, I, pos);
-	    }), R"mydelimiter(
-        Initialize the Mesh object.
-
-        Args:
-            filename (str): path to the mesh file.
-            space (dSpaceID): collision space.
-            mass (float): mass of the mesh object.
-            inertia (np.array[float[3,3]]): inertia matrix of the mesh object.
-            com (np.array[float[3]]): center of mass position, around which the inertia matrix is expressed.
-        )mydelimiter",
-        py::arg("filename"), py::arg("space"), py::arg("mass"), py::arg("inertia"), py::arg("com"));
-
+	    Returns:
+	        float: full path of the mesh file.
+	    )mydelimiter");
 
     /**********/
 	/* Sphere */
 	/**********/
 	// Sphere class (from include/raisim/object/singleBodies/Sphere.hpp)
 	py::class_<raisim::Sphere, raisim::SingleBodyObject>(m, "Sphere", "Raisim Sphere.")
-	    .def(py::init<double, double>(),
-	    "Initialize a sphere.\n\n"
-	    "Args:\n"
-	    "    radius (float): radius of the sphere.\n"
-	    "    mass (float): mass of the sphere.",
-	    py::arg("radius"), py::arg("mass"))
-	    .def("get_radius", &raisim::Sphere::getRadius, R"mydelimiter(
+        .def("get_radius", &raisim::Sphere::getRadius, R"mydelimiter(
 	    Get the sphere's radius.
 
 	    Returns:
