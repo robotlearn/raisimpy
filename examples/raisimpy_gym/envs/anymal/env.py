@@ -237,7 +237,7 @@ class AnymalEnv(RaisimGymEnv):
         return self.ob_scaled
 
     def update_reward(self):
-        self.torque_reward = self.torque_reward_coeff * np.linalg.norm(self.robot.get_generalized_forces())
+        self.torque_reward = self.torque_reward_coeff * np.linalg.norm(self.robot.get_generalized_forces())**2
         self.forward_vel_reward = self.forward_vel_reward_coeff * self.body_linear_vel[0]
         self.total_reward = self.torque_reward + self.forward_vel_reward
 
