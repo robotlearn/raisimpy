@@ -85,7 +85,7 @@ class AnymalEnv(RaisimGymEnv):
         self.gc_init = np.array([0, 0, .54, 1, 0, 0, 0, .03, .4, -.8, -.03, .4, -.8, .03, -.4, .8, -.03, -.4, .8])
 
         # set PD gains
-        self.joint_p_gains, self.joint_d_gains = np.zeros(self.gc_dim), np.zeros(self.gv_dim)
+        self.joint_p_gains, self.joint_d_gains = np.zeros(self.gv_dim), np.zeros(self.gv_dim)
         self.joint_p_gains[-self.num_joints:] = 40.
         self.joint_d_gains[-self.num_joints:] = 1.
         self.robot.set_pd_gains(self.joint_p_gains, self.joint_d_gains)
