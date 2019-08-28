@@ -117,12 +117,11 @@ raisim::Mat<n, m> convert_np_to_mat(const py::array_t<double> &array) {
     // copy the data
     for (size_t i=0; i<n; i++)
         for (size_t j=0; j<m; j++)
-            mat[i, j] = *array.data(i, j);
+            mat(i, j) = *array.data(i, j);
 
     // return matrix
     return mat;
 }
-
 
 /// \brief: convert from raisim::VecDyn to np.array[float64[n]]
 py::array_t<double> convert_vecdyn_to_np(const raisim::VecDyn &vec);

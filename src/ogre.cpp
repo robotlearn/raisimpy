@@ -298,8 +298,18 @@ void init_ogre(py::module &m) {
                 angle (float): radian angle.
                 relative_to (TransformSpace): transform space relative to.
             )mydelimiter",
-            py::arg("angle"), py::arg("relative_to") = Ogre::Node::TransformSpace::TS_LOCAL);
+            py::arg("angle"), py::arg("relative_to") = Ogre::Node::TransformSpace::TS_LOCAL)
 
+        .def("yaw", [](Ogre::Node &self, float angle, Ogre::Node::TransformSpace relative_to) {
+           self.yaw(Ogre::Radian(angle), relative_to);
+         }, R"mydelimiter(
+              Rotate the node around the Z-axis.
+
+              Args:
+                  angle (float): radian angle.
+                  relative_to (TransformSpace): transform space relative to.
+              )mydelimiter",
+         py::arg("angle"), py::arg("relative_to") = Ogre::Node::TransformSpace::TS_LOCAL);
 
 
     /*************/

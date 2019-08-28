@@ -8,8 +8,8 @@ project (raisim_wrapper)
 find_package(pybind11 CONFIG 2.3 REQUIRED)
 find_package(Eigen3 REQUIRED eigen3)
 # find_package(OpenMP REQUIRED)
-find_package(raisim CONFIG 0.3.0 REQUIRED)
-find_package(raisimOgre CONFIG 0.3.0 REQUIRED)
+find_package(raisim CONFIG 0.4.1 REQUIRED)
+find_package(raisimOgre CONFIG 0.4.0 REQUIRED)
 
 # header files
 include_directories(include ${EIGEN3_INCLUDE_DIRS})

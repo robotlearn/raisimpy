@@ -706,6 +706,17 @@ void init_visualizer(py::module &m) {
             py::arg("capsule"), py::arg("name"), py::arg("material") = "default",
             py::return_value_policy::reference_internal)
 
+        .def("create_graphical_object", py::overload_cast<raisim::Mesh*, const std::string&,
+                                                          const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+            Add a mesh in the window.
+
+            Args:
+                mesh (Mesh): Raisim mesh instance.
+                name (str): name of the mesh.
+                material (str): material for visualization.
+            )mydelimiter",
+             py::arg("mesh"), py::arg("name"), py::arg("material") = "default",
+             py::return_value_policy::reference_internal)
 
         .def("sync", &raisim::OgreVis::sync, "Synchronize Raisim and Ogre.")
 

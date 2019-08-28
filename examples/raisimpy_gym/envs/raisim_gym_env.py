@@ -58,7 +58,7 @@ class RaisimGymEnv(object):  # gym.Env
         self.config = config
 
         # define other variables
-        self.simulation_dt = 0.001
+        self.simulation_dt = 0.0025
         self.control_dt = 0.01
         self.extra_info = dict()  # {str: float}
         self.ob_dim, self.action_dim = 0, 0
@@ -70,6 +70,7 @@ class RaisimGymEnv(object):  # gym.Env
 
         # create world
         self.world = raisim.World()
+        self.world.set_time_step(self.simulation_dt)
 
     def init(self):
         raise NotImplementedError
