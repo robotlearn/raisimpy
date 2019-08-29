@@ -32,17 +32,7 @@ First, clone this repository:
     git clone https://github.com/robotlearn/raisimpy
     cd raisimpy
 
-
-Before compiling the code in this repo, you will have to move or copy the ``extras`` folder (that you can find in this
-repo) in the ``$LOCAL_BUILD/include/ode/`` folder. This ``extras`` folder contains some missing header files for ODE 
-which are necessary in order, for instance, to load meshes with Raisim. This can be done by:
-
-.. code-block:: bash
-
-    cp -r extras $LOCAL_BUILD/include/ode/
-
-
-Now, you can finally compile the python wrappers from the ``raisimpy`` folder by typing:
+Then, compile the python wrappers from the ``raisimpy`` folder by typing:
 
 .. code-block:: bash
 
@@ -175,29 +165,6 @@ Troubleshooting
         sudo ln -sf eigen3/unsupported unsupported
 
     or you can replace the ``#include <Eigen/*>`` by ``#include <eigen3/Eigen/*>``.
-
-- I can't close the GUI with ``Esc`` key nor by clicking the close button; I have to kill the process manually.
-    - In OgreVis.hpp, add the following line among the public methods:
-
-    .. code-block:: cpp
-
-        void closeApp();
-
-    - In OgreVis.cpp, add the following lines, and recompile:
-
-    .. code-block:: cpp
-
-        void OgreVis::closeApp() {
-            ApplicationContext::closeApp();
-            imGuiRenderCallback_ = nullptr;
-            imGuiSetupCallback_ = nullptr;
-            keyboardCallback_ = nullptr;
-            setUpCallback_ = nullptr;
-            controlCallback_ = nullptr;
-        }
-
-    You couldn't close the window because ``OgreVis`` would keep a reference to the Python callback functions, 
-    preventing Python to close properly (with ``pybind11``).
 
 - Segmentation fault. This is probably an oversight on my part, the error is probably due to some poor management 
   of pointers and memory allocation. E.g. an object has been deleted from the Python side but the C++ side is also 

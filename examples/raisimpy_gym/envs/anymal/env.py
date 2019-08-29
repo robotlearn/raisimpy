@@ -85,7 +85,7 @@ class AnymalEnv(RaisimGymEnv):
         self.gc_init = np.array([0, 0, .54, 1, 0, 0, 0, .03, .4, -.8, -.03, .4, -.8, .03, -.4, .8, -.03, -.4, .8])
 
         # set PD gains
-        self.joint_p_gains, self.joint_d_gains = np.zeros(self.gc_dim), np.zeros(self.gv_dim)
+        self.joint_p_gains, self.joint_d_gains = np.zeros(self.gv_dim), np.zeros(self.gv_dim)
         self.joint_p_gains[-self.num_joints:] = 40.
         self.joint_d_gains[-self.num_joints:] = 1.
         self.robot.set_pd_gains(self.joint_p_gains, self.joint_d_gains)
@@ -237,7 +237,7 @@ class AnymalEnv(RaisimGymEnv):
         return self.ob_scaled
 
     def update_reward(self):
-        self.torque_reward = self.torque_reward_coeff * np.linalg.norm(self.robot.get_generalized_forces())
+        self.torque_reward = self.torque_reward_coeff * np.linalg.norm(self.robot.get_generalized_forces())**2
         self.forward_vel_reward = self.forward_vel_reward_coeff * self.body_linear_vel[0]
         self.total_reward = self.torque_reward + self.forward_vel_reward
 
@@ -253,9 +253,11 @@ class AnymalEnv(RaisimGymEnv):
 
     def is_terminal_state(self):
         # if the contact body is not the foot, the episode is over
+        self.done = False
         for contact in self.robot.get_contacts():
             if contact.get_local_body_index() not in self.foot_indices:
                 self.done = True
+
         return self.done
 
     def set_seed(self, seed=None):
