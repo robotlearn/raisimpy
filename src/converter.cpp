@@ -99,7 +99,7 @@ raisim::MatDyn convert_np_to_matdyn(const py::array_t<double> &array) {
     // copy the data
     for (size_t i=0; i<nrows; i++)
         for (size_t j=0; j<ncols; j++)
-            mat[i, j] = *array.data(i, j);
+            mat(i, j) = *array.data(i, j);
 
     // return matrix
     return mat;
@@ -121,7 +121,7 @@ py::array_t<double> convert_transformation_to_np(const raisim::Transformation &t
     // fill for rotation matrix
     for (size_t i=0; i<3; i++)
         for (size_t j=0; j<3; j++)
-            *homogeneous.mutable_data(i, j) = rot[i,j]; // *rot.data(i, j);
+            *homogeneous.mutable_data(i, j) = rot(i, j); // *rot.data(i, j);
 
     // fill for position vector
     for (size_t i=0; i<3; i++)
@@ -163,7 +163,7 @@ raisim::Transformation convert_np_to_transformation(const py::array_t<double> &a
     // fill rotation matrix
     for (size_t i=0; i<3; i++)
         for (size_t j=0; j<3; j++)
-            rot[i, j] = *array.data(i, j);
+            rot(i, j) = *array.data(i, j);
 
     // fill position vector
     for (size_t i=0; i<3; i++)
