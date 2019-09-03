@@ -87,7 +87,7 @@ py::array_t<double> convert_mat_to_np(const raisim::Mat<n, m> &mat) {
     // return np.array[float64[n,m]]
     return py::array_t<double>(
         {n, m},     // shape
-        {sizeof(double), sizeof(double)},   // C-style contiguous strides for double (double=8bytes)
+        {sizeof(double), n*sizeof(double)},   // C-style contiguous strides for double (double=8bytes)
         ptr);
 //        mat);   // numpy array references this parent
 }
