@@ -431,7 +431,7 @@ void init_visualizer(py::module &m) {
 ////        py::return_value_policy::reference_internal)
 //        py::return_value_policy::reference)
 
-        .def("get", []() {
+        .def_static("get", []() {
             auto vis = raisim::OgreVis::get();
             return std::unique_ptr<raisim::OgreVis, py::nodelete>(vis);
         }, R"mydelimiter(
