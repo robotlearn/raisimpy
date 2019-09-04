@@ -6,7 +6,7 @@ This folder contains python wrappers around RaiSim (``raisimLib`` and ``raisimOg
 Small parts of the wrappers were inspired by the code given in the ``raisimGym/raisim_gym/env/`` folder. 
 If you use these wrappers, please acknowledge their contribution as well by citing [1-4].
 
-The following wrappers have been tested on Ubuntu 16.04 with Python 3.5. Other platforms and Python 
+The following wrappers have been tested on Ubuntu 16.04 with Python 3.5 and 2.7. Other platforms and Python 
 versions might work as well but we didn't test them yet.
 
 
