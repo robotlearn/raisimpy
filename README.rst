@@ -214,7 +214,7 @@ If you still have some space in your paper for the references, you can add the f
 .. code-block:: latex
 
     @misc{delhaisse2019raisimpy
-        author = {Delhaisse, Brian},
+        author = {Delhaisse, Brian and Rozo, Leonel},
     	title = {RaiSimPy: A Python wrapper for RaiSim},
     	howpublished = {\url{https://github.com/robotlearn/raisimpy}},
     	year=2019,
