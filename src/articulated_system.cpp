@@ -1189,7 +1189,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
         .def("get_frame_angular_velocity", [](raisim::ArticulatedSystem &self, size_t frame_id) {
             Vec<3> vec;
-            self.getFrameVelocity(frame_id, vec);
+            self.getFrameAngularVelocity(frame_id, vec);
             return convert_vec_to_np(vec);
         }, R"mydelimiter(
         Get the frame angular velocity expressed in the Cartesian world frame.
