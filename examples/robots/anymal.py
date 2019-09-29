@@ -106,7 +106,6 @@ if __name__ == '__main__':
             anymals[-1].set_pd_gains(joint_p_gain, joint_d_gain)
             anymals[-1].set_name("anymal" + str(j + i*N))
 
-    distribution = lambda: np.random.normal(0.0, 0.2)
     anymals[-1].print_body_names_in_order()
 
     class Controller:  # instead of defining a class, you can also define a decorated function, see `anymal_lambda.py`
@@ -133,7 +132,7 @@ if __name__ == '__main__':
 
             for i in range(N):
                 for j in range(N):
-                    joint_config = joint_nominal_config + distribution()
+                    joint_config = joint_nominal_config + np.random.normal(0., 0.5, [19])
                     anymals[i * N + j].set_pd_targets(joint_config, joint_velocity_target)
 
     vis.set_control_callback(Controller())

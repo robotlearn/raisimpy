@@ -58,21 +58,6 @@ using namespace raisim;
 
 void init_articulated_system(py::module &m) { // py::module &main_module) {
 
-
-    /****************/
-    /* LoadFromMJCF */
-    /****************/
-    py::class_<raisim::mjcf::LoadFromMJCF>(m, "LoadFromMJCF", "Load from MJCF file.")
-        .def(py::init<ArticulatedSystem &, std::string, std::vector<std::string>>(), "Initialize the MJCF loader.");
-
-
-    /*****************/
-    /* LoadFromURDF2 */
-    /*****************/
-    py::class_<raisim::urdf::LoadFromURDF2>(m, "LoadFromURDF2", "Load from URDF file.")
-        .def(py::init<ArticulatedSystem &, std::string, std::vector<std::string>>(), "Initialize the URDF loader.");
-
-
     /***************/
     /* ControlMode */
     /***************/
