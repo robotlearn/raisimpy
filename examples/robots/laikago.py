@@ -105,7 +105,6 @@ if __name__ == '__main__':
             laikagos[-1].set_pd_gains(joint_p_gain, joint_d_gain)
             laikagos[-1].set_name("laikago" + str(j + i * N))
 
-    distribution = lambda: np.random.normal(0.0, 0.2)
     laikagos[-1].print_body_names_in_order()
 
     class Controller:
@@ -130,8 +129,10 @@ if __name__ == '__main__':
 
             for i in range(N):
                 for j in range(N):
-                    joint_config = joint_nominal_config + distribution()
+                    # first 6 elements are ignored
+                    joint_config = joint_nominal_config + np.random.normal(0., 0.5, [19])
                     laikagos[i * N + j].set_pd_targets(joint_config, joint_velocity_target)
+                    print(joint_config)
 
 
     vis.set_control_callback(Controller())

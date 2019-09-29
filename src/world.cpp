@@ -403,7 +403,7 @@ void init_world(py::module &m) {
             py::return_value_policy::reference_internal)
 
 
-        .def("get_object", &raisim::World::getObject, R"mydelimiter(
+        .def("get_object",py::overload_cast<const std::string &>(&raisim::World::getObject), R"mydelimiter(
 	    Get the specified object instance from its unique name.
 
 	    Args:
@@ -414,6 +414,19 @@ void init_world(py::module &m) {
 	    )mydelimiter",
 	    py::arg("name"),
 	    py::return_value_policy::reference_internal)
+
+
+        .def("get_object",py::overload_cast<std::size_t>(&raisim::World::getObject), R"mydelimiter(
+	    Get the specified object instance from its unique name.
+
+	    Args:
+            name (str): unique name of the object instance we want to get.
+
+	    Returns:
+	        Object, None: the specified object instance. None, if it didn't find the object.
+	    )mydelimiter",
+        py::arg("world_index"),
+        py::return_value_policy::reference_internal)
 
 
 	    .def("get_constraint", &raisim::World::getConstraint, R"mydelimiter(
