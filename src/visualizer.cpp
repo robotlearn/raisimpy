@@ -82,50 +82,50 @@ class gui { // dummy class for the namespace
 
 void init_visualizer(py::module &m) {
 
-    // create submodules
+  // create submodules
 //    py::module visualizer_module = m.def_submodule("visualizer", "RaiSim visualizer submodule.");
 
-    /********/
-    /* Ogre */
-    /********/
-    init_ogre(m);
+  /********/
+  /* Ogre */
+  /********/
+  init_ogre(m);
 
 
-    /************/
-    /* GuiState */
-    /************/
-    py::class_<gui>(m, "gui", "RaiSim gui state.")
-        .def_property_static("manual_stepping",
-            [](py::object) {
-                return raisim::gui::manualStepping;
-            }, [](py::object, bool stepping) {
-                raisim::gui::manualStepping = stepping;
-            })
-        .def_property_static("show_bodies",
-            [](py::object) {
-                return raisim::gui::showBodies;
-            }, [](py::object, bool show) {
-                raisim::gui::showBodies = show;
-            })
-        .def_property_static("show_collisions",
-            [](py::object) {
-                return raisim::gui::showCollision;
-            }, [](py::object, bool show) {
-                raisim::gui::showCollision = show;
-            })
-        .def_property_static("show_contacts",
-            [](py::object) {
-                return raisim::gui::showContacts;
-            }, [](py::object, bool show) {
-                raisim::gui::showContacts = show;
-            })
-        .def_property_static("show_forces",
-            [](py::object) {
-                return raisim::gui::showForces;
-            }, [](py::object, bool show) {
-                raisim::gui::showForces = show;
-            })
-        ;
+  /************/
+  /* GuiState */
+  /************/
+  py::class_<gui>(m, "gui", "RaiSim gui state.")
+      .def_property_static("manual_stepping",
+                           [](py::object) {
+                             return raisim::gui::manualStepping;
+                           }, [](py::object, bool stepping) {
+            raisim::gui::manualStepping = stepping;
+          })
+      .def_property_static("show_bodies",
+                           [](py::object) {
+                             return raisim::gui::showBodies;
+                           }, [](py::object, bool show) {
+            raisim::gui::showBodies = show;
+          })
+      .def_property_static("show_collisions",
+                           [](py::object) {
+                             return raisim::gui::showCollision;
+                           }, [](py::object, bool show) {
+            raisim::gui::showCollision = show;
+          })
+      .def_property_static("show_contacts",
+                           [](py::object) {
+                             return raisim::gui::showContacts;
+                           }, [](py::object, bool show) {
+            raisim::gui::showContacts = show;
+          })
+      .def_property_static("show_forces",
+                           [](py::object) {
+                             return raisim::gui::showForces;
+                           }, [](py::object, bool show) {
+            raisim::gui::showForces = show;
+          })
+      ;
 
 //    py::module gui_module = m.def_submodule("gui", "RaiSim GUI state.");
 //    gui_module.attr("manual_stepping") = false;
@@ -135,83 +135,83 @@ void init_visualizer(py::module &m) {
 //    gui_module.attr("show_forces") = false;
 
 
-    /*****************/
-    /* GraphicObject */
-    /*****************/
+  /*****************/
+  /* GraphicObject */
+  /*****************/
 
-    py::class_<raisim::GraphicObject>(m, "GraphicObject", "Graphic object represents the underlying object.")
-        .def(py::init<>(), "Instantiate the Graphic Object by setting its orientation, scale, and offset position.")
-        .def_property("pos_offset",
-            [](raisim::GraphicObject &self) {  // getter
-                return convert_vec_to_np(self.offset);
-            }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
-                raisim::Vec<3> pos = convert_np_to_vec<3>(array);
-                self.offset = pos;
-            })
-        .def_property("scale",
-            [](raisim::GraphicObject &self) {  // getter
-                return convert_vec_to_np(self.scale);
-            }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
-                raisim::Vec<3> scale = convert_np_to_vec<3>(array);
-                self.scale = scale;
-            })
-        .def_property("rotation_offset",
-            [](raisim::GraphicObject &self) {  // getter
-                return convert_mat_to_np(self.rotationOffset);
-            }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
-                raisim::Mat<3,3> rot = convert_np_to_mat<3,3>(array);
-                self.rotationOffset = rot;
-            })
-        .def_readwrite("local_id", &raisim::GraphicObject::localId)
-        .def_readwrite("selectable", &raisim::GraphicObject::selectable_)
-        .def_readwrite("name", &raisim::GraphicObject::name)
-        .def_readwrite("mesh_name", &raisim::GraphicObject::meshName)
-        .def_readwrite("group", &raisim::GraphicObject::group);
-
-
-    /****************/
-    /* VisualObject */
-    /****************/
-
-    py::class_<raisim::VisualObject>(m, "VisualObject", "Visual object is for visualization only")
-        .def(py::init<>(), "Instantiate a visual object (by setting its orientation).")
-        .def_property("pos_offset",
-            [](raisim::VisualObject &self) {  // getter
-                return convert_vec_to_np(self.offset);
-            }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
-                raisim::Vec<3> pos = convert_np_to_vec<3>(array);
-                self.offset = pos;
-            })
-        .def_property("scale",
-            [](raisim::VisualObject &self) {  // getter
-                return convert_vec_to_np(self.scale);
-            }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
-                raisim::Vec<3> scale = convert_np_to_vec<3>(array);
-                self.scale = scale;
-            })
-        .def_property("rotation_offset",
-            [](raisim::VisualObject &self) {  // getter
-                return convert_mat_to_np(self.rotationOffset);
-            }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
-                raisim::Mat<3,3> rot = convert_np_to_mat<3,3>(array);
-                self.rotationOffset = rot;
-            })
-        .def_readwrite("name", &raisim::VisualObject::name)
-        .def_readwrite("group", &raisim::VisualObject::group);
+  py::class_<raisim::GraphicObject>(m, "GraphicObject", "Graphic object represents the underlying object.")
+      .def(py::init<>(), "Instantiate the Graphic Object by setting its orientation, scale, and offset position.")
+      .def_property("pos_offset",
+                    [](raisim::GraphicObject &self) {  // getter
+                      return convert_vec_to_np(self.offset);
+                    }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
+            raisim::Vec<3> pos = convert_np_to_vec<3>(array);
+            self.offset = pos;
+          })
+      .def_property("scale",
+                    [](raisim::GraphicObject &self) {  // getter
+                      return convert_vec_to_np(self.scale);
+                    }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
+            raisim::Vec<3> scale = convert_np_to_vec<3>(array);
+            self.scale = scale;
+          })
+      .def_property("rotation_offset",
+                    [](raisim::GraphicObject &self) {  // getter
+                      return convert_mat_to_np(self.rotationOffset);
+                    }, [](raisim::GraphicObject &self, py::array_t<double> array) {  // setter
+            raisim::Mat<3,3> rot = convert_np_to_mat<3,3>(array);
+            self.rotationOffset = rot;
+          })
+      .def_readwrite("local_id", &raisim::GraphicObject::localId)
+      .def_readwrite("selectable", &raisim::GraphicObject::selectable_)
+      .def_readwrite("name", &raisim::GraphicObject::name)
+      .def_readwrite("mesh_name", &raisim::GraphicObject::meshName)
+      .def_readwrite("group", &raisim::GraphicObject::group);
 
 
-    /****************************/
-    /* SimAndGraphicsObjectPool */
-    /****************************/
+  /****************/
+  /* VisualObject */
+  /****************/
 
-    py::class_<raisim::SimAndGraphicsObjectPool>(m, "SimAndGraphicsObjectPool", "Sim and graphic object pool.")
-        .def("set_world", &raisim::SimAndGraphicsObjectPool::setWorld, R"mydelimiter(
+  py::class_<raisim::VisualObject>(m, "VisualObject", "Visual object is for visualization only")
+      .def(py::init<>(), "Instantiate a visual object (by setting its orientation).")
+      .def_property("pos_offset",
+                    [](raisim::VisualObject &self) {  // getter
+                      return convert_vec_to_np(self.offset);
+                    }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
+            raisim::Vec<3> pos = convert_np_to_vec<3>(array);
+            self.offset = pos;
+          })
+      .def_property("scale",
+                    [](raisim::VisualObject &self) {  // getter
+                      return convert_vec_to_np(self.scale);
+                    }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
+            raisim::Vec<3> scale = convert_np_to_vec<3>(array);
+            self.scale = scale;
+          })
+      .def_property("rotation_offset",
+                    [](raisim::VisualObject &self) {  // getter
+                      return convert_mat_to_np(self.rotationOffset);
+                    }, [](raisim::VisualObject &self, py::array_t<double> array) {  // setter
+            raisim::Mat<3,3> rot = convert_np_to_mat<3,3>(array);
+            self.rotationOffset = rot;
+          })
+      .def_readwrite("name", &raisim::VisualObject::name)
+      .def_readwrite("group", &raisim::VisualObject::group);
+
+
+  /****************************/
+  /* SimAndGraphicsObjectPool */
+  /****************************/
+
+  py::class_<raisim::SimAndGraphicsObjectPool>(m, "SimAndGraphicsObjectPool", "Sim and graphic object pool.")
+      .def("set_world", &raisim::SimAndGraphicsObjectPool::setWorld, R"mydelimiter(
             Set the world instance.
 
             Args:
                 world (World): world instance.
             )mydelimiter",
-            py::arg("world"))
+           py::arg("world"))
 
 //        .def("insert", &raisim::SimAndGraphicsObjectPool::insert, R"mydelimiter(
 //            Insert the given name, object and graphics.
@@ -223,75 +223,75 @@ void init_visualizer(py::module &m) {
 //            )mydelimiter",
 //            py::arg("name"), py::arg("obj"), py::arg("graphics"))
 
-        .def("erase", py::overload_cast<const std::string&>(&raisim::SimAndGraphicsObjectPool::erase), R"mydelimiter(
+      .def("erase", py::overload_cast<const std::string&>(&raisim::SimAndGraphicsObjectPool::erase), R"mydelimiter(
             Erase the specified object (from its name) from the world.
 
             Args:
                 name (str): object name to be removed.
             )mydelimiter",
-            py::arg("name"))
+           py::arg("name"))
 
-        .def("erase", py::overload_cast<raisim::Object*>(&raisim::SimAndGraphicsObjectPool::erase), R"mydelimiter(
+      .def("erase", py::overload_cast<raisim::Object*>(&raisim::SimAndGraphicsObjectPool::erase), R"mydelimiter(
             Erase the specified object from the world.
 
             Args:
                 obj (Object): object instance.
             )mydelimiter",
-            py::arg("name"))
+           py::arg("name"))
 
-        .def("sync", &raisim::SimAndGraphicsObjectPool::sync, "Synchronize: update pose of graphical objects.");
+      .def("sync", &raisim::SimAndGraphicsObjectPool::sync, "Synchronize: update pose of graphical objects.");
 
 
-    /*************/
-    /* CameraMan */
-    /*************/
+  /*************/
+  /* CameraMan */
+  /*************/
 
-    py::enum_<raisim::CameraStyle>(m, "CameraStyle")
-        .value("CS_FREELOOK", raisim::CameraStyle::CS_FREELOOK)
-        .value("CS_ORBIT", raisim::CameraStyle::CS_ORBIT)
-        .value("CS_MANUAL", raisim::CameraStyle::CS_MANUAL);
+  py::enum_<raisim::CameraStyle>(m, "CameraStyle")
+      .value("CS_FREELOOK", raisim::CameraStyle::CS_FREELOOK)
+      .value("CS_ORBIT", raisim::CameraStyle::CS_ORBIT)
+      .value("CS_MANUAL", raisim::CameraStyle::CS_MANUAL);
 
-    py::class_<raisim::CameraMan>(m, "CameraMan", "Raisim CameraMan")
-        .def("update", &raisim::CameraMan::update, "update.")
-        .def("manual_stop", &raisim::CameraMan::manualStop, "Manually stops the camera when in free-look mode.")
-        .def("set_fixed_yaw", &raisim::CameraMan::setFixedYaw, R"mydelimiter(
+  py::class_<raisim::CameraMan>(m, "CameraMan", "Raisim CameraMan")
+      .def("update", &raisim::CameraMan::update, "update.")
+      .def("manual_stop", &raisim::CameraMan::manualStop, "Manually stops the camera when in free-look mode.")
+      .def("set_fixed_yaw", &raisim::CameraMan::setFixedYaw, R"mydelimiter(
             Fix the yaw axis to be Vector3::UNIT_Y of the parent node (tabletop mode) otherwise the yaw axis can
             change freely.
 
             Args:
                 fixed (bool): if we should fix or not the yaw axis.
             )mydelimiter",
-            py::arg("fixed"))
-        .def("get_top_speed", &raisim::CameraMan::getTopSpeed, R"mydelimiter(
+           py::arg("fixed"))
+      .def("get_top_speed", &raisim::CameraMan::getTopSpeed, R"mydelimiter(
             Get the camera top speed (only valid in the free-look style).
 
             Returns:
                 float: camera top speed.
             )mydelimiter")
-        .def("set_top_speed", &raisim::CameraMan::setTopSpeed, R"mydelimiter(
+      .def("set_top_speed", &raisim::CameraMan::setTopSpeed, R"mydelimiter(
             Set the camera's top speed.
 
             Args:
                 speed (float): camera top seed.
             )mydelimiter",
-            py::arg("speed"))
-        .def("get_style", &raisim::CameraMan::getStyle, R"mydelimiter(
+           py::arg("speed"))
+      .def("get_style", &raisim::CameraMan::getStyle, R"mydelimiter(
             Get the camera style.
 
             Returns:
                 CameraStyle: camera style between {CS_FREELOOK, CS_ORBIT, CS_MANUAL}.
             )mydelimiter")
-        .def("set_style", &raisim::CameraMan::setStyle, R"mydelimiter(
+      .def("set_style", &raisim::CameraMan::setStyle, R"mydelimiter(
             Set the camera style.
 
             Args:
                 style (CameraStyle): camera style between {CS_FREELOOK, CS_ORBIT, CS_MANUAL}.
             )mydelimiter",
-            py::arg("style"))
-        .def_property("style", &raisim::CameraMan::getStyle, &raisim::CameraMan::setStyle)
-        .def("set_yaw_pitch_dist", [](raisim::CameraMan &self, float yaw, float pitch, float dist, bool track) {
-            self.setYawPitchDist(Ogre::Radian(yaw), Ogre::Radian(pitch), dist, track);
-        }, R"mydelimiter(
+           py::arg("style"))
+      .def_property("style", &raisim::CameraMan::getStyle, &raisim::CameraMan::setStyle)
+      .def("set_yaw_pitch_dist", [](raisim::CameraMan &self, float yaw, float pitch, float dist, bool track) {
+             self.setYawPitchDist(Ogre::Radian(yaw), Ogre::Radian(pitch), dist, track);
+           }, R"mydelimiter(
             Sets the spatial offset from the target. Only applies for orbit style.
 
             Args:
@@ -300,93 +300,93 @@ void init_visualizer(py::module &m) {
                 dist (float): distance from target.
                 track_objects_yaw (bool): if True, tracks object yaw.
             )mydelimiter",
-            py::arg("yaw"), py::arg("pitch"), py::arg("dist"), py::arg("track") = false)
+           py::arg("yaw"), py::arg("pitch"), py::arg("dist"), py::arg("track") = false)
 
-        .def("get_camera", &raisim::CameraMan::getCamera, R"mydelimiter(
+      .def("get_camera", &raisim::CameraMan::getCamera, R"mydelimiter(
             Get the camera scene node.
 
             Returns:
                 Ogre.SceneNode: camera scene node.
             )mydelimiter",
 //            py::return_value_policy::reference_internal)
-            py::return_value_policy::reference)
-        .def("set_camera", &raisim::CameraMan::setCamera, R"mydelimiter(
+           py::return_value_policy::reference)
+      .def("set_camera", &raisim::CameraMan::setCamera, R"mydelimiter(
             Set the camera scene node; i.e. swaps the camera on our camera man for another camera.
 
             Args:
                 camera (Ogre.SceneNode): camera scene node.
             )mydelimiter",
-            py::arg("camera"))
-        .def("get_target", &raisim::CameraMan::getTarget, R"mydelimiter(
+           py::arg("camera"))
+      .def("get_target", &raisim::CameraMan::getTarget, R"mydelimiter(
             Get the target scene node that we revolve around. Only applies for orbit style.
 
             Returns:
                 Ogre.SceneNode: target scene node.
             )mydelimiter",
 //            py::return_value_policy::reference_internal)
-            py::return_value_policy::reference)
-        .def("set_target", &raisim::CameraMan::setCamera, R"mydelimiter(
+           py::return_value_policy::reference)
+      .def("set_target", &raisim::CameraMan::setCamera, R"mydelimiter(
             Set the target scene node; i.e. the target we will revolve around. Only applies for orbit style.
 
             Args:
                 target (Ogre.SceneNode): target scene node.
             )mydelimiter",
-            py::arg("target"))
-        .def("set_pivot_offset", [](raisim::CameraMan &self, py::array_t<double> &offset) {
-            Ogre::Vector3 vec = convert_np_to_ogre_vec3(offset);
-            self.setPivotOffset(vec);
-        }, R"mydelimiter(
+           py::arg("target"))
+      .def("set_pivot_offset", [](raisim::CameraMan &self, py::array_t<double> &offset) {
+             Ogre::Vector3 vec = convert_np_to_ogre_vec3(offset);
+             self.setPivotOffset(vec);
+           }, R"mydelimiter(
             Set the pivot offset.
 
             Args:
                 offset (np.array[float[3]]): pivot offset.
             )mydelimiter",
-            py::arg("offset"));
+           py::arg("offset"));
 
 
-    /***********/
-    /* OgreVis */
-    /***********/
+  /***********/
+  /* OgreVis */
+  /***********/
 
-    // py::nodelete is because the destructor is non-public (it is private because of Singleton pattern)
-    py::class_<raisim::OgreVis, std::unique_ptr<raisim::OgreVis, py::nodelete>> ogre_vis(m, "OgreVis", "Raisim Ogre visualizer.");
+  // py::nodelete is because the destructor is non-public (it is private because of Singleton pattern)
+  py::class_<raisim::OgreVis, std::unique_ptr<raisim::OgreVis, py::nodelete>> ogre_vis(m, "OgreVis", "Raisim Ogre visualizer.");
 
-    py::enum_<raisim::OgreVis::VisualizationGroup>(ogre_vis, "VisualizationGroup")
-        .value("RAISIM_OBJECT_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_OBJECT_GROUP)
-        .value("RAISIM_COLLISION_BODY_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_COLLISION_BODY_GROUP)
-        .value("RAISIM_CONTACT_POINT_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_CONTACT_POINT_GROUP)
-        .value("RAISIM_CONTACT_FORCE_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_CONTACT_FORCE_GROUP);
+  py::enum_<raisim::OgreVis::VisualizationGroup>(ogre_vis, "VisualizationGroup")
+      .value("RAISIM_OBJECT_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_OBJECT_GROUP)
+      .value("RAISIM_COLLISION_BODY_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_COLLISION_BODY_GROUP)
+      .value("RAISIM_CONTACT_POINT_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_CONTACT_POINT_GROUP)
+      .value("RAISIM_CONTACT_FORCE_GROUP", raisim::OgreVis::VisualizationGroup::RAISIM_CONTACT_FORCE_GROUP);
 
-    ogre_vis.def(py::init([]() {
-            // get reference to the Ogre visualizer
-            auto vis = raisim::OgreVis::get();
+  ogre_vis.def(py::init([]() {
+        // get reference to the Ogre visualizer
+        auto vis = raisim::OgreVis::get();
 
-            // return the visualizer
-            return std::unique_ptr<raisim::OgreVis, py::nodelete>(vis);
-        }), "Initialize the visualizer.")
-        .def(py::init([](raisim::World *world, uint32_t width=1280, uint32_t height=720,
-                    double fps=60, int anti_aliasing=2) {
-                // get reference to the Ogre visualizer
-                auto vis = raisim::OgreVis::get();
+        // return the visualizer
+        return std::unique_ptr<raisim::OgreVis, py::nodelete>(vis);
+      }), "Initialize the visualizer.")
+      .def(py::init([](raisim::World *world, uint32_t width=1280, uint32_t height=720,
+                       double fps=60, int anti_aliasing=2) {
+             // get reference to the Ogre visualizer
+             auto vis = raisim::OgreVis::get();
 
-                // initialize (need to be called before initApp)
-                vis->setWorld(world);
-                vis->setWindowSize(width, height);
-                vis->setImguiSetupCallback(imguiSetupCallback);
-                vis->setImguiRenderCallback(imguiRenderCallBack);
-                vis->setKeyboardCallback(raisimKeyboardCallback);
-                vis->setSetUpCallback(setupCallback);
-                vis->setAntiAliasing(anti_aliasing);
+             // initialize (need to be called before initApp)
+             vis->setWorld(world);
+             vis->setWindowSize(width, height);
+             vis->setImguiSetupCallback(imguiSetupCallback);
+             vis->setImguiRenderCallback(imguiRenderCallBack);
+             vis->setKeyboardCallback(raisimKeyboardCallback);
+             vis->setSetUpCallback(setupCallback);
+             vis->setAntiAliasing(anti_aliasing);
 
-                // starts visualizer thread (this will call `setup()`)
-                vis->initApp();  // This function initializes the render system and resources. (from ApplicationContext.h)
+             // starts visualizer thread (this will call `setup()`)
+             vis->initApp();  // This function initializes the render system and resources. (from ApplicationContext.h)
 
-                // set desired FPS
-                vis->setDesiredFPS(fps);
+             // set desired FPS
+             vis->setDesiredFPS(fps);
 
-                // return the visualizer
-                return std::unique_ptr<raisim::OgreVis, py::nodelete>(vis);
-            }), R"mydelimiter(
+             // return the visualizer
+             return std::unique_ptr<raisim::OgreVis, py::nodelete>(vis);
+           }), R"mydelimiter(
             Instantiate the visualizer for the given world.
 
             Args:
@@ -396,31 +396,31 @@ void init_visualizer(py::module &m) {
                 fps (double): the number of frames per second.
                 anti_aliasing (int): anti aliasing.
             )mydelimiter",
-            py::arg("world"), py::arg("width") = 1280, py::arg("height") = 720, py::arg("fps") = 60,
-            py::arg("anti_aliasing") = 2)
+           py::arg("world"), py::arg("width") = 1280, py::arg("height") = 720, py::arg("fps") = 60,
+           py::arg("anti_aliasing") = 2)
 
 
-        .def("set_default_callbacks", [](raisim::OgreVis &self) {
-            auto vis = raisim::OgreVis::get();
-             vis->setImguiSetupCallback(imguiSetupCallback);
-             vis->setImguiRenderCallback(imguiRenderCallBack);
-             vis->setKeyboardCallback(raisimKeyboardCallback);
-             vis->setSetUpCallback(setupCallback);
-        }, R"mydelimiter(
+      .def("set_default_callbacks", [](raisim::OgreVis &self) {
+        auto vis = raisim::OgreVis::get();
+        vis->setImguiSetupCallback(imguiSetupCallback);
+        vis->setImguiRenderCallback(imguiRenderCallBack);
+        vis->setKeyboardCallback(raisimKeyboardCallback);
+        vis->setSetUpCallback(setupCallback);
+      }, R"mydelimiter(
         This sets the default callbacks (imguiSetupCallback, imguiRenderCallBack, raisimKeyboardCallback, setupCallback).
         )mydelimiter")
 
-        .def("init_app", [](raisim::OgreVis &self) {
-            // get reference to the Ogre visualizer
-            auto vis = raisim::OgreVis::get();
-            // starts visualizer thread (this will call `setup()`)
-            vis->initApp();
-        }, R"mydelimiter(
+      .def("init_app", [](raisim::OgreVis &self) {
+        // get reference to the Ogre visualizer
+        auto vis = raisim::OgreVis::get();
+        // starts visualizer thread (this will call `setup()`)
+        vis->initApp();
+      }, R"mydelimiter(
         This calls `initApp`. Note that you have to configure it before calling it, by setting the world, window
         size, the various callbacks, and the anti-aliasing.
         )mydelimiter")
 
-        .def("close_app", &raisim::OgreVis::closeApp, "This function closes down the application - saves the configuration then shutdowns.")
+      .def("close_app", &raisim::OgreVis::closeApp, "This function closes down the application - saves the configuration then shutdowns.")
 
 //        .def("get", &raisim::OgreVis::get, R"mydelimiter(
 //        Return a pointer to the singleton visualizer.
@@ -431,10 +431,10 @@ void init_visualizer(py::module &m) {
 ////        py::return_value_policy::reference_internal)
 //        py::return_value_policy::reference)
 
-        .def_static("get", []() {
-            auto vis = raisim::OgreVis::get();
-            return std::unique_ptr<raisim::OgreVis, py::nodelete>(vis);
-        }, R"mydelimiter(
+      .def_static("get", []() {
+        auto vis = raisim::OgreVis::get();
+        return std::unique_ptr<raisim::OgreVis, py::nodelete>(vis);
+      }, R"mydelimiter(
         Return a pointer to the singleton visualizer.
 
         Returns:
@@ -442,63 +442,63 @@ void init_visualizer(py::module &m) {
         )mydelimiter")
 
 
-        /* CALLBACKS (use of functional) */
+          /* CALLBACKS (use of functional) */
 
-        .def("set_imgui_render_callback", &raisim::OgreVis::setImguiRenderCallback, R"mydelimiter(
+      .def("set_imgui_render_callback", &raisim::OgreVis::setImguiRenderCallback, R"mydelimiter(
         Set imgui render callback. This callback is called for every frame.
 
         Args:
             callback (callable): callable void function.
         )mydelimiter",
-        py::arg("callback"))
-        .def("set_imgui_setup_callback", &raisim::OgreVis::setImguiSetupCallback, R"mydelimiter(
+           py::arg("callback"))
+      .def("set_imgui_setup_callback", &raisim::OgreVis::setImguiSetupCallback, R"mydelimiter(
         Set imgui setup callback. This callback is called only once in setup.
 
         Args:
             callback (callable): callable void function.
         )mydelimiter",
-        py::arg("callback"))
-        .def("set_setup_callback", &raisim::OgreVis::setSetUpCallback, R"mydelimiter(
+           py::arg("callback"))
+      .def("set_setup_callback", &raisim::OgreVis::setSetUpCallback, R"mydelimiter(
         Set set up callbacks; load custom meshes, materials, anything necessary for setup.
 
         Args:
             callback (callable): callable void function.
         )mydelimiter",
-        py::arg("callback"))
-        .def("set_control_callback", &raisim::OgreVis::setControlCallback, R"mydelimiter(
+           py::arg("callback"))
+      .def("set_control_callback", &raisim::OgreVis::setControlCallback, R"mydelimiter(
         Set control callback.
 
         Args:
             callback (callable): callable void function.
         )mydelimiter",
-        py::arg("callback"))
-        .def("set_keyboard_callback", &raisim::OgreVis::setKeyboardCallback, R"mydelimiter(
+           py::arg("callback"))
+      .def("set_keyboard_callback", &raisim::OgreVis::setKeyboardCallback, R"mydelimiter(
         Set keyboard callback. This callback is called for every keyboard event.
 
         Args:
             callback (callable): callable function which accepts as input the KeyboardEvent.
         )mydelimiter",
-        py::arg("callback"))
+           py::arg("callback"))
 
 
 
-        .def("add_resource_directory", &raisim::OgreVis::addResourceDirectory, R"mydelimiter(
+      .def("add_resource_directory", &raisim::OgreVis::addResourceDirectory, R"mydelimiter(
             Add resource directory for materials
 
             Args:
                 dir (str): resource directory path.
             )mydelimiter",
-            py::arg("dir"))
+           py::arg("dir"))
 
-        .def("load_material", &raisim::OgreVis::loadMaterialFile, R"mydelimiter(
+      .def("load_material", &raisim::OgreVis::loadMaterialFile, R"mydelimiter(
             Once the directory is added (using `add_resource_dir`), load the material file in the directory.
 
             Args:
                 filename (str): material filename.
             )mydelimiter",
-            py::arg("filename"))
+           py::arg("filename"))
 
-        .def("load_mesh", &raisim::OgreVis::loadMeshFile, R"mydelimiter(
+      .def("load_mesh", &raisim::OgreVis::loadMeshFile, R"mydelimiter(
             Loading mesh file using assimp. Ogre only reads .mesh file. If it something else is given, it creates
             .mesh file inside the directory. file can be the whole path to the meshfile, or from the memory.
 
@@ -507,52 +507,52 @@ void init_visualizer(py::module &m) {
                 name (str): mesh name.
                 from_memory (bool): if we should load it from memory.
             )mydelimiter",
-            py::arg("filename"), py::arg("name"), py::arg("from_memory")=false)
+           py::arg("filename"), py::arg("name"), py::arg("from_memory")=false)
 
-        .def("get_resource_dir", &raisim::OgreVis::getResourceDir, R"mydelimiter(
+      .def("get_resource_dir", &raisim::OgreVis::getResourceDir, R"mydelimiter(
             Get resource directory of RaisimOgreVisualizer
 
             Returns:
                 str: resource directory path.
             )mydelimiter")
 
-        .def("get_scene_manager", &raisim::OgreVis::getSceneManager, R"mydelimiter(
+      .def("get_scene_manager", &raisim::OgreVis::getSceneManager, R"mydelimiter(
             Get the Ogre::SceneManager owned by this class.
 
             Returns:
                 Ogre.SceneManager: the scene manager.
             )mydelimiter",
 //            py::return_value_policy::reference_internal)
-            py::return_value_policy::reference)
+           py::return_value_policy::reference)
 
-        .def("get_camera_man", &raisim::OgreVis::getCameraMan, R"mydelimiter(
+      .def("get_camera_man", &raisim::OgreVis::getCameraMan, R"mydelimiter(
             Return the camera man instance attached to the visualizer.
 
             Returns:
                 raisim.visualizer.CameraMan: camera man instance.
             )mydelimiter",
 //            py::return_value_policy::reference_internal)
-            py::return_value_policy::reference)
+           py::return_value_policy::reference)
 
-        .def("get_light", &raisim::OgreVis::getLight, R"mydelimiter(
+      .def("get_light", &raisim::OgreVis::getLight, R"mydelimiter(
             Return the default light that can be adjusted.
 
             Returns:
                 Light: Light instance.
             )mydelimiter",
 //            py::return_value_policy::reference_internal)
-            py::return_value_policy::reference)
+           py::return_value_policy::reference)
 
-        .def("get_light_node", &raisim::OgreVis::getLightNode, R"mydelimiter(
+      .def("get_light_node", &raisim::OgreVis::getLightNode, R"mydelimiter(
             Get LightNode for moving the main light around.
 
             Returns:
                 SceneNode: Light node instance.
             )mydelimiter",
 //            py::return_value_policy::reference_internal)
-            py::return_value_policy::reference)
+           py::return_value_policy::reference)
 
-        .def("get_view_port", &raisim::OgreVis::getViewPort, R"mydelimiter(
+      .def("get_view_port", &raisim::OgreVis::getViewPort, R"mydelimiter(
             Get main Ogre::Viewport.
 
             Note: 'A viewport is the meeting of a camera and a rendering surface - the camera renders the scene from a
@@ -569,9 +569,9 @@ void init_visualizer(py::module &m) {
                 - [1] Ogre::Viewport class reference: https://www.ogre3d.org/docs/api/1.8/class_ogre_1_1_viewport.html
             )mydelimiter",
 //            py::return_value_policy::reference_internal)
-            py::return_value_policy::reference)
+           py::return_value_policy::reference)
 
-        .def("set_world", &raisim::OgreVis::setWorld, R"mydelimiter(
+      .def("set_world", &raisim::OgreVis::setWorld, R"mydelimiter(
             Set the world instance to the visualizer.
 
             Warnings: this must be called before simulation.
@@ -579,32 +579,32 @@ void init_visualizer(py::module &m) {
             Args:
                 world (World): world instance.
             )mydelimiter",
-            py::arg("world"))
+           py::arg("world"))
 
-        .def("get_world", &raisim::OgreVis::getWorld, R"mydelimiter(
+      .def("get_world", &raisim::OgreVis::getWorld, R"mydelimiter(
             Return the world instance attached to the visualizer.
 
             Returns:
                 World: world instance.
             )mydelimiter")
 
-        .def("run", &raisim::OgreVis::run, "run simulation and visualization.")
+      .def("run", &raisim::OgreVis::run, "run simulation and visualization.")
 
-        .def("start_rendering", &raisim::OgreVis::startRendering, "start rendering loop without updating simulation.")
+      .def("start_rendering", &raisim::OgreVis::startRendering, "start rendering loop without updating simulation.")
 
-        .def("render_one_frame", &raisim::OgreVis::renderOneFrame, "renders a single frame without updating simulation.")
+      .def("render_one_frame", &raisim::OgreVis::renderOneFrame, "renders a single frame without updating simulation.")
 
-        .def("set_camera_speed", &raisim::OgreVis::setCameraSpeed, R"mydelimiter(
+      .def("set_camera_speed", &raisim::OgreVis::setCameraSpeed, R"mydelimiter(
             Set camera speed.
 
             Args:
                 speed (float): camera speed (for free motion).
             )mydelimiter",
-            py::arg("speed"))
+           py::arg("speed"))
 
 
-        .def("create_graphical_object", py::overload_cast<raisim::Sphere*, const std::string&,
-            const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::Sphere*, const std::string&,
+                                                        const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add a sphere in the window.
 
             Args:
@@ -612,12 +612,12 @@ void init_visualizer(py::module &m) {
                 name (str): name of the sphere.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("sphere"), py::arg("name"), py::arg("material") = "default",
-            py::return_value_policy::reference_internal)
+           py::arg("sphere"), py::arg("name"), py::arg("material") = "default",
+           py::return_value_policy::reference_internal)
 
 
-        .def("create_graphical_object", py::overload_cast<raisim::Ground *, double, const std::string&,
-            const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::Ground *, double, const std::string&,
+                                                        const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add a ground in the window.
 
             Args:
@@ -626,12 +626,12 @@ void init_visualizer(py::module &m) {
                 name (str): name of the ground.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("ground"), py::arg("dimension"), py::arg("name"), py::arg("material") = "default",
-            py::return_value_policy::reference_internal)
+           py::arg("ground"), py::arg("dimension"), py::arg("name"), py::arg("material") = "default",
+           py::return_value_policy::reference_internal)
 
 
-        .def("create_graphical_object", py::overload_cast<raisim::Box*, const std::string&,
-            const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::Box*, const std::string&,
+                                                        const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add a box in the window.
 
             Args:
@@ -639,12 +639,12 @@ void init_visualizer(py::module &m) {
                 name (str): name of the box.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("box"), py::arg("name"), py::arg("material") = "default",
-            py::return_value_policy::reference_internal)
+           py::arg("box"), py::arg("name"), py::arg("material") = "default",
+           py::return_value_policy::reference_internal)
 
 
-        .def("create_graphical_object", py::overload_cast<raisim::Cylinder*, const std::string&,
-            const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::Cylinder*, const std::string&,
+                                                        const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add a cylinder in the window.
 
             Args:
@@ -652,12 +652,12 @@ void init_visualizer(py::module &m) {
                 name (str): name of the cylinder.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("cylinder"), py::arg("name"), py::arg("material") = "default",
-            py::return_value_policy::reference_internal)
+           py::arg("cylinder"), py::arg("name"), py::arg("material") = "default",
+           py::return_value_policy::reference_internal)
 
 
-        .def("create_graphical_object", py::overload_cast<raisim::Wire*, const std::string&,
-            const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::Wire*, const std::string&,
+                                                        const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add a wire in the window.
 
             Args:
@@ -665,12 +665,12 @@ void init_visualizer(py::module &m) {
                 name (str): name of the wire.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("wire"), py::arg("name"), py::arg("material") = "default",
-            py::return_value_policy::reference_internal)
+           py::arg("wire"), py::arg("name"), py::arg("material") = "default",
+           py::return_value_policy::reference_internal)
 
 
-        .def("create_graphical_object", py::overload_cast<raisim::Capsule*, const std::string&,
-            const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::Capsule*, const std::string&,
+                                                        const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add a capsule in the window.
 
             Args:
@@ -678,24 +678,24 @@ void init_visualizer(py::module &m) {
                 name (str): name of the capsule.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("capsule"), py::arg("name"), py::arg("material") = "default",
-            py::return_value_policy::reference_internal)
+           py::arg("capsule"), py::arg("name"), py::arg("material") = "default",
+           py::return_value_policy::reference_internal)
 
 
-        .def("create_graphical_object", py::overload_cast<raisim::ArticulatedSystem*, const std::string&>
-            (&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::ArticulatedSystem*, const std::string&>
+               (&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add an articulated system in the window.
 
             Args:
                 articulated_system (ArticulatedSystem): Raisim articulated system instance.
                 name (str): name of the articulated system.
             )mydelimiter",
-            py::arg("articulated_system"), py::arg("name"),
-            py::return_value_policy::reference_internal)
+           py::arg("articulated_system"), py::arg("name"),
+           py::return_value_policy::reference_internal)
 
 
-        .def("create_graphical_object", py::overload_cast<raisim::HeightMap*, const std::string&,
-            const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::HeightMap*, const std::string&,
+                                                        const std::string&, int>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add a heightmap in the window.
 
             Args:
@@ -703,11 +703,11 @@ void init_visualizer(py::module &m) {
                 name (str): name of the heightmap.
                 material (str): material for visualization.
             )mydelimiter",
-            py::arg("capsule"), py::arg("name"), py::arg("material") = "default",
-            py::return_value_policy::reference_internal)
+           py::arg("capsule"), py::arg("name"), py::arg("material") = "default", py::arg("down_sample") = 1,
+           py::return_value_policy::reference_internal)
 
-        .def("create_graphical_object", py::overload_cast<raisim::Mesh*, const std::string&,
-                                                          const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
+      .def("create_graphical_object", py::overload_cast<raisim::Mesh*, const std::string&,
+                                                        const std::string&>(&raisim::OgreVis::createGraphicalObject), R"mydelimiter(
             Add a mesh in the window.
 
             Args:
@@ -715,48 +715,48 @@ void init_visualizer(py::module &m) {
                 name (str): name of the mesh.
                 material (str): material for visualization.
             )mydelimiter",
-             py::arg("mesh"), py::arg("name"), py::arg("material") = "default",
-             py::return_value_policy::reference_internal)
+           py::arg("mesh"), py::arg("name"), py::arg("material") = "default",
+           py::return_value_policy::reference_internal)
 
-        .def("sync", &raisim::OgreVis::sync, "Synchronize Raisim and Ogre.")
+      .def("sync", &raisim::OgreVis::sync, "Synchronize Raisim and Ogre.")
 
 
-        .def("get_paused", &raisim::OgreVis::getPaused, R"mydelimiter(
+      .def("get_paused", &raisim::OgreVis::getPaused, R"mydelimiter(
         Return if the visualizer is paused or not.
 
         Returns:
             bool: True if the visualizer is paused.
         )mydelimiter")
-        .def_property_readonly("paused", &raisim::OgreVis::getPaused, "Return if the visualizer is paused or not.")
+      .def_property_readonly("paused", &raisim::OgreVis::getPaused, "Return if the visualizer is paused or not.")
 
 
-        .def("remove", py::overload_cast<raisim::Object*>(&raisim::OgreVis::remove), R"mydelimiter(
+      .def("remove", py::overload_cast<raisim::Object*>(&raisim::OgreVis::remove), R"mydelimiter(
         Remove an object from the visualizer.
 
         Args:
             obj (Object): Raisim object instance to be removed.
         )mydelimiter",
-        py::arg("obj"))
-        .def("remove", py::overload_cast<const std::string&>(&raisim::OgreVis::remove), R"mydelimiter(
+           py::arg("obj"))
+      .def("remove", py::overload_cast<const std::string&>(&raisim::OgreVis::remove), R"mydelimiter(
         Remove an object from the visualizer.
 
         Args:
             name (str): name of the object to be removed.
         )mydelimiter",
-        py::arg("name"))
+           py::arg("name"))
 
 
-        .def("set_window_size", &raisim::OgreVis::setWindowSize, R"mydelimiter(
+      .def("set_window_size", &raisim::OgreVis::setWindowSize, R"mydelimiter(
         Set the window size.
 
         Returns:
             width: width of the window.
             height: height of the window.
         )mydelimiter",
-        py::arg("width"), py::arg("height"))
+           py::arg("width"), py::arg("height"))
 
 
-        .def("get_selected", &raisim::OgreVis::getSelected, R"mydelimiter(
+      .def("get_selected", &raisim::OgreVis::getSelected, R"mydelimiter(
         Return the current selected item.
 
         Returns:
@@ -765,7 +765,7 @@ void init_visualizer(py::module &m) {
         )mydelimiter")
 
 
-        .def("get_selected_graphical_object", &raisim::OgreVis::getSelectedGraphicalObject, R"mydelimiter(
+      .def("get_selected_graphical_object", &raisim::OgreVis::getSelectedGraphicalObject, R"mydelimiter(
         Return the current selected graphical object item.
 
         Returns:
@@ -773,28 +773,28 @@ void init_visualizer(py::module &m) {
         )mydelimiter")
 
 
-        .def("select", &raisim::OgreVis::select, R"mydelimiter(
+      .def("select", &raisim::OgreVis::select, R"mydelimiter(
         Select the given graphic object item.
 
         Args:
             obj (GraphicObject): Raisim graphic object instance.
             highlight (bool): if we should highlight the graphical object in the visualizer.
         )mydelimiter",
-        py::arg("obj"), py::arg("highlight") = true)
+           py::arg("obj"), py::arg("highlight") = true)
 
 
-        .def("deselect", &raisim::OgreVis::deselect, "Deselect the current selected object.")
+      .def("deselect", &raisim::OgreVis::deselect, "Deselect the current selected object.")
 
 
-        // TODO: wrap Ogre::SceneNode
+          // TODO: wrap Ogre::SceneNode
 //        .def("get_raisim_object", &raisim::OgreVis::getRaisimObject, "get Raisim object.")
 
 
-        // TODO: wrap Ogre::SceneNode
+          // TODO: wrap Ogre::SceneNode
 //        .def("get_graphic_object", &raisim::OgreVis::getGraphicObject, "get the graphic object.")
 
 
-        .def("is_recording", &raisim::OgreVis::isRecording, R"mydelimiter(
+      .def("is_recording", &raisim::OgreVis::isRecording, R"mydelimiter(
         Return if the visualizer is recording or not.
 
         Returns:
@@ -802,47 +802,47 @@ void init_visualizer(py::module &m) {
         )mydelimiter")
 
 
-        .def("start_recording_video", &raisim::OgreVis::startRecordingVideo, R"mydelimiter(
+      .def("start_recording_video", &raisim::OgreVis::startRecordingVideo, R"mydelimiter(
         Initiate a video recording session.
 
         Returns:
             filename (str): filename for the recorded video.
         )mydelimiter",
-        py::arg("filename"))
+           py::arg("filename"))
 
 
-        .def("stop_recording_video_and_save", &raisim::OgreVis::stopRecordingVideoAndSave,
-            "Stop the recording of the video and save it in the previous given filename.")
+      .def("stop_recording_video_and_save", &raisim::OgreVis::stopRecordingVideoAndSave,
+           "Stop the recording of the video and save it in the previous given filename.")
 
 
-        .def("set_desired_fps", &raisim::OgreVis::setDesiredFPS, R"mydelimiter(
+      .def("set_desired_fps", &raisim::OgreVis::setDesiredFPS, R"mydelimiter(
         Set the desired frame per second.
 
         Args:
             fps (double): frame per second.
         )mydelimiter",
-        py::arg("fps"))
+           py::arg("fps"))
 
 
-        .def("set_anti_aliasing", &raisim::OgreVis::setAntiAliasing, R"mydelimiter(
+      .def("set_anti_aliasing", &raisim::OgreVis::setAntiAliasing, R"mydelimiter(
         Set the anti-aliasing.
 
         Args:
             fsaa (int): frame anti-aliasing; fsaa should be set to one of (1,2,4,8).
         )mydelimiter",
-        py::arg("fsaa"))
+           py::arg("fsaa"))
 
 
-        .def("set_visibility_mask", &raisim::OgreVis::setVisibilityMask, R"mydelimiter(
+      .def("set_visibility_mask", &raisim::OgreVis::setVisibilityMask, R"mydelimiter(
         Set the visibility mask.
 
         Args:
             mask (unsigned long int): mask (it is a bitfield).
         )mydelimiter",
-        py::arg("mask"))
+           py::arg("mask"))
 
 
-        .def("get_visual_object_list", &raisim::OgreVis::getVisualObjectList, R"mydelimiter(
+      .def("get_visual_object_list", &raisim::OgreVis::getVisualObjectList, R"mydelimiter(
         Return the list of visual objects.
 
         Returns:
@@ -850,17 +850,17 @@ void init_visualizer(py::module &m) {
         )mydelimiter")
 
 
-        .def("set_contact_visual_object_size", &raisim::OgreVis::setContactVisObjectSize, R"mydelimiter(
+      .def("set_contact_visual_object_size", &raisim::OgreVis::setContactVisObjectSize, R"mydelimiter(
         Set the contact visual object sizes (for contact points and contact force arrows).
 
         Args:
             point_size (float): point size.
             force_arrow_length (float): force size corresponding to the maximum impulse.
         )mydelimiter",
-        py::arg("point_size"), py::arg("force_arrow_length"))
+           py::arg("point_size"), py::arg("force_arrow_length"))
 
 
-        .def("get_real_time_factor_reference", &raisim::OgreVis::getRealTimeFactorReference, R"mydelimiter(
+      .def("get_real_time_factor_reference", &raisim::OgreVis::getRealTimeFactorReference, R"mydelimiter(
         Get the real time factor reference.
 
         Returns:
@@ -868,8 +868,8 @@ void init_visualizer(py::module &m) {
         )mydelimiter")
 
 
-        // TODO: improve the documentation of the below function
-        .def("get_take_n_steps", &raisim::OgreVis::getTakeNSteps, R"mydelimiter(
+          // TODO: improve the documentation of the below function
+      .def("get_take_n_steps", &raisim::OgreVis::getTakeNSteps, R"mydelimiter(
         Get take N steps.
 
         Returns:
@@ -877,26 +877,26 @@ void init_visualizer(py::module &m) {
         )mydelimiter")
 
 
-        .def("set_remote_mode", &raisim::OgreVis::setRemoteMode, R"mydelimiter(
+      .def("set_remote_mode", &raisim::OgreVis::setRemoteMode, R"mydelimiter(
         Set the remote mode.
 
         Args:
             mode (bool): True if we are in a remote mode.
         )mydelimiter",
-        py::arg("mode"))
+           py::arg("mode"))
 
 
-        .def("remote_run", &raisim::OgreVis::remoteRun, "Run in remote mode.")
+      .def("remote_run", &raisim::OgreVis::remoteRun, "Run in remote mode.")
 
 
-        .def("add_visual_object", [](raisim::OgreVis &self, const std::string &name, const std::string &mesh_name,
-            const std::string &material, py::array_t<double> scale, bool cast_shadow = true,
-            unsigned long int group = raisim::OgreVis::VisualizationGroup::RAISIM_OBJECT_GROUP |
-            raisim::OgreVis::VisualizationGroup::RAISIM_COLLISION_BODY_GROUP) {
-                // convert np.array to vec<3>
-                raisim::Vec<3> scale_ = convert_np_to_vec<3>(scale);
-                self.addVisualObject(name, mesh_name, material, scale_, cast_shadow, group);
-            }, R"mydelimiter(
+      .def("add_visual_object", [](raisim::OgreVis &self, const std::string &name, const std::string &mesh_name,
+                                   const std::string &material, py::array_t<double> scale, bool cast_shadow = true,
+                                   unsigned long int group = raisim::OgreVis::VisualizationGroup::RAISIM_OBJECT_GROUP |
+                                       raisim::OgreVis::VisualizationGroup::RAISIM_COLLISION_BODY_GROUP) {
+             // convert np.array to vec<3>
+             raisim::Vec<3> scale_ = convert_np_to_vec<3>(scale);
+             self.addVisualObject(name, mesh_name, material, scale_, cast_shadow, group);
+           }, R"mydelimiter(
         Add a visual object.
 
         Args:
@@ -908,15 +908,15 @@ void init_visualizer(py::module &m) {
             group (unsigned long int): group. You can select between {RAISIM_OBJECT_GROUP, RAISIM_COLLISION_BODY_GROUP,
                 RAISIM_CONTACT_POINT_GROUP, RAISIM_CONTACT_FORCE_GROUP}, or any combination using bit operations.
         )mydelimiter",
-        py::arg("name"), py::arg("mesh_name"), py::arg("material"), py::arg("scale"), py::arg("cast_shadow") = true,
-        py::arg("group") = raisim::OgreVis::VisualizationGroup::RAISIM_OBJECT_GROUP |
-            raisim::OgreVis::VisualizationGroup::RAISIM_COLLISION_BODY_GROUP)
+           py::arg("name"), py::arg("mesh_name"), py::arg("material"), py::arg("scale"), py::arg("cast_shadow") = true,
+           py::arg("group") = raisim::OgreVis::VisualizationGroup::RAISIM_OBJECT_GROUP |
+               raisim::OgreVis::VisualizationGroup::RAISIM_COLLISION_BODY_GROUP)
 
 
-        .def("clear_visual_object", &raisim::OgreVis::clearVisualObject, "Clear all the visual objects.")
+      .def("clear_visual_object", &raisim::OgreVis::clearVisualObject, "Clear all the visual objects.")
 
 
-        .def("build_height_map", &raisim::OgreVis::buildHeightMap, R"mydelimiter(
+      .def("build_height_map", &raisim::OgreVis::buildHeightMap, R"mydelimiter(
         Build the heigthmap.
 
         Args:
@@ -929,8 +929,8 @@ void init_visualizer(py::module &m) {
             y_center (float): the y center of the heightmap in the world.
             height (list[float]): list of desired heights.
         )mydelimiter",
-        py::arg("name"), py::arg("x_samples"), py::arg("x_size"), py::arg("x_center"), py::arg("y_samples"),
-        py::arg("y_size"), py::arg("y_center"), py::arg("height"));
+           py::arg("name"), py::arg("x_samples"), py::arg("x_size"), py::arg("x_center"), py::arg("y_samples"),
+           py::arg("y_size"), py::arg("y_center"), py::arg("height"));
 
 
 }
