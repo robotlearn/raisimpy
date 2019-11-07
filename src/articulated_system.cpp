@@ -72,8 +72,6 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
     /***********************/
     py::class_<raisim::CollisionDefinition>(m, "CollisionDefinition", "Raisim CollisionDefinition struct.")
 
-        .def(py::init<>(), "Initialize the Collision Definition class.")
-
         .def(py::init([](py::array_t<double> rot_offset, py::array_t<double> pos_offset, size_t local_idx,
                 dGeomID collision_object, std::string name) {
             // convert from np to Mat and Vec
@@ -109,7 +107,6 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
                 self.posOffset = pos;
             })
         .def_readwrite("local_idx", &raisim::CollisionDefinition::localIdx)
-        .def_readwrite("collision_object", &raisim::CollisionDefinition::colObj)
         .def_readwrite("name", &raisim::CollisionDefinition::name);
 
 
@@ -123,136 +120,6 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
         .value("Mesh", raisim::Shape::Type::Mesh)
         .value("Capsule", raisim::Shape::Type::Capsule)
         .value("Cone", raisim::Shape::Type::Cone);
-
-
-    /*************/
-    /* VisObject */
-    /*************/
-    py::class_<raisim::VisObject>(m, "VisObject", "Raisim Visualization Object struct.")
-        .def_property("rot",
-            [](raisim::VisObject &self) {  // getter
-                return convert_mat_to_np(self.rot);
-            }, [](raisim::VisObject &self, py::array_t<double> array) {  // setter
-                Mat<3,3> rot = convert_np_to_mat<3,3>(array);
-                self.rot = rot;
-            })
-        .def_property("offset",
-            [](raisim::VisObject &self) {  // getter
-                return convert_vec_to_np(self.offset);
-            }, [](raisim::VisObject &self, py::array_t<double> array) {  // setter
-                Vec<3> pos = convert_np_to_vec<3>(array);
-                self.offset = pos;
-            })
-        .def_property("scale",
-            [](raisim::VisObject &self) {  // getter
-                return convert_vec_to_np(self.scale);
-            }, [](raisim::VisObject &self, py::array_t<double> array) {  // setter
-                Vec<3> pos = convert_np_to_vec<3>(array);
-                self.scale = pos;
-            })
-        .def_property("color",
-            [](raisim::VisObject &self) {  // getter
-                return convert_vec_to_np(self.color);
-            }, [](raisim::VisObject &self, py::array_t<double> array) {  // setter
-                Vec<4> pos = convert_np_to_vec<4>(array);
-                self.color = pos;
-            })
-        .def_readwrite("local_idx", &raisim::VisObject::localIdx)
-        .def_readwrite("shape", &raisim::VisObject::shape)
-        .def_readwrite("filename", &raisim::VisObject::fileName)
-        .def_readwrite("material", &raisim::VisObject::material)
-        .def_readwrite("vis_shape_param", &raisim::VisObject::visShapeParam)
-        .def_readwrite("name", &raisim::VisObject::name);
-
-
-    /*********/
-    /* Joint */
-    /*********/
-    py::class_<raisim::Joint> joint(m, "Joint", "Raisim Joint struct.");
-
-    py::enum_<raisim::Joint::Type>(joint, "Type")
-        .value("FIXED", raisim::Joint::Type::FIXED)
-        .value("REVOLUTE", raisim::Joint::Type::REVOLUTE)
-        .value("PRISMATIC", raisim::Joint::Type::PRISMATIC)
-        .value("SPHERICAL", raisim::Joint::Type::SPHERICAL)
-        .value("FLOATING", raisim::Joint::Type::FLOATING);
-
-    joint.def(py::init<>(), "Instantiate the Joint class.")
-
-        .def("joint_axis", &raisim::Joint::jointAxis, R"mydelimiter(
-        Set the given joint axis.
-
-        Args:
-            axis (list of 3 float): joint axis.
-        )mydelimiter",
-        py::arg("axis"))
-
-        .def("joint_position", py::overload_cast<std::initializer_list<double>>(&raisim::Joint::jointPosition), R"mydelimiter(
-        Set the joint position.
-
-        Args:
-            position (list of 3 float): joint position.
-        )mydelimiter",
-        py::arg("position"))
-
-        .def("joint_position", [](raisim::Joint &self, py::array_t<double> position) {
-            Vec<3> pos = convert_np_to_vec<3>(position);
-            self.jointPosition(pos);
-        }, R"mydelimiter(
-        Set the joint position.
-
-        Args:
-            position (list of 3 float): joint position.
-        )mydelimiter",
-        py::arg("position"))
-
-        .def("get_gc_dim", &raisim::Joint::getGcDim, R"mydelimiter(
-        Get the dimension for the generalized coordinates (gc) associated with the joint type.
-
-        Returns:
-            int: dimension
-        )mydelimiter")
-
-        .def("get_gv_dim", &raisim::Joint::getGvDim, R"mydelimiter(
-        Get the dimension for the generalized velocities (gv) associated with the joint type.
-
-        Returns:
-            int: dimension
-        )mydelimiter")
-
-        .def_property("rot",
-            [](raisim::Joint &self) {  // getter
-                return convert_mat_to_np(self.rot);
-            }, [](raisim::Joint &self, py::array_t<double> array) {  // setter
-                Mat<3,3> rot = convert_np_to_mat<3,3>(array);
-                self.rot = rot;
-            })
-
-        .def_property("limit",
-            [](raisim::Joint &self) {  // getter
-                return convert_vec_to_np(self.limit);
-            }, [](raisim::Joint &self, py::array_t<double> array) {  // setter
-                auto limit = convert_np_to_vec<2>(array);
-                self.limit = limit;
-            })
-
-        .def_property("axis",
-            [](raisim::Joint &self) {  // getter
-                return convert_vec_to_np(self.axis_);
-            }, [](raisim::Joint &self, py::array_t<double> array) {  // setter
-                auto axis = convert_np_to_vec<3>(array);
-                self.axis_ = axis;
-            })
-
-        .def_property("pos",
-            [](raisim::Joint &self) {  // getter
-                return convert_vec_to_np(self.pos_P_);
-            }, [](raisim::Joint &self, py::array_t<double> array) {  // setter
-                auto pos = convert_np_to_vec<3>(array);
-                self.pos_P_ = pos;
-            })
-
-        .def_readwrite("type", &raisim::Joint::type);
 
 
     /*******************/
@@ -277,418 +144,6 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
         .def_readwrite("parent_name", &raisim::CoordinateFrame::parentName)
         .def_readwrite("name", &raisim::CoordinateFrame::name)
         .def_readwrite("is_child", &raisim::CoordinateFrame::isChild);  // child is the first body after movable joint. All fixed bodies attached to a child is not a child
-
-
-    /********/
-    /* Body */
-    /********/
-    py::class_<raisim::Body>(m, "Body", "Raisim Body class.")
-        .def(py::init<>(), "Instantiate the body class.")
-
-        .def("set_mass", py::overload_cast<double>(&raisim::Body::mass), R"mydelimiter(
-        Set the body mass.
-
-        Args:
-            mass (float): body mass.
-        )mydelimiter",
-        py::arg("mass"))
-        .def("get_mass", py::overload_cast<>(&raisim::Body::mass), R"mydelimiter(
-        Return the body mass.
-
-        Returns:
-            float: body mass.
-        )mydelimiter")
-
-
-        .def("set_inertia", py::overload_cast<std::initializer_list<double>>(&raisim::Body::inertia), R"mydelimiter(
-        Set the body full inertia matrix.
-
-        Args:
-            inertia (list[float]): full inertia matrix [ixx, ixy, ixz, iyy, iyz, izz]
-        )mydelimiter",
-        py::arg("inertia"))
-
-
-        .def("set_inertia", [](raisim::Body &self, py::array_t<double> inertia) {
-            if (inertia.size() == 3) {
-                Vec<3> I = convert_np_to_vec<3>(inertia);
-                self.inertia(I);
-            } else if (inertia.size() == 9) {
-                // check dimensions and shape
-                if (inertia.ndim() != 2) {
-                    std::ostringstream s;
-                    s << "error: expecting the given inertia to have a dimension of 2, but got instead a dimension of "
-                        << inertia.ndim() << ".";
-                    throw std::domain_error(s.str());
-                }
-                if ((inertia.shape(0) != 3) || (inertia.shape(1) != 3)) {
-                    std::ostringstream s;
-                    s << "error: expecting the given inertia to have the shape (3,3), but got instead the shape ("
-                        << inertia.shape(0) << ", " << inertia.shape(1) << ").";
-                    throw std::domain_error(s.str());
-                }
-
-                Vec<6> I;
-                I[0] = *inertia.data(0, 0);  // ixx
-                I[1] = *inertia.data(0, 1);  // ixy
-                I[2] = *inertia.data(0, 2);  // ixz
-                I[3] = *inertia.data(1, 1);  // iyy
-                I[4] = *inertia.data(1, 2);  // iyz
-                I[5] = *inertia.data(2, 2);  // izz
-                self.inertia(I);
-            } else {
-                Vec<6> I = convert_np_to_vec<6>(inertia);
-                self.inertia(I);
-            }
-        }, R"mydelimiter(
-        Set the body inertia matrix.
-
-        Args:
-            inertia (np.array[float[3]], np.array[float[6]], np.array[float[3,3]]): inertia matrix given as
-                [ixx, iyy, izz], [ixx, ixy, ixz, iyy, iyz, izz], or [[ixx, ixy, ixz], [ixy, iyy, iyz], [ixz, iyz, izz]].
-        )mydelimiter",
-        py::arg("inertia"))
-
-
-        .def("get_inertia", [](raisim::Body &self) {
-            Mat<3,3> inertia = self.inertia();
-            return convert_mat_to_np(inertia);
-        } , R"mydelimiter(
-        Return the body full inertia matrix.
-
-        Returns:
-            np.array[float[3,3]]: full inertia matrix
-        )mydelimiter")
-
-
-        .def("set_com", py::overload_cast<std::initializer_list<double>>(&raisim::Body::com), R"mydelimiter(
-        Set the body center of mass position.
-
-        Args:
-            com (list[float]): com position.
-        )mydelimiter",
-        py::arg("com"))
-
-        .def("set_com", [](raisim::Body &self, py::array_t<double> com) {
-            Vec<3> pos = convert_np_to_vec<3>(com);
-            self.com(pos);
-        }, R"mydelimiter(
-        Set the body center of mass position.
-
-        Args:
-            com (np.array[float[3]]): com position.
-        )mydelimiter",
-        py::arg("com"))
-
-        .def("get_com", [](raisim::Body &self) {
-            Vec<3> com = self.com();
-            return convert_vec_to_np(com);
-        } , R"mydelimiter(
-        Return the body center of mass position.
-
-        Returns:
-            np.array[float[3]]: com position.
-        )mydelimiter")
-
-
-        .def("set_rpy", [](raisim::Body &self, py::array_t<double> rpy) {
-            self.RPY(convert_np_to_vec<3>(rpy));
-        }, R"mydelimiter(
-        Set the body's orientation as roll-pitch-yaw angles.
-
-        Args:
-            rpy (np.array[float[3]]): roll-pitch-yaw angles.
-        )mydelimiter",
-        py::arg("rpy"))
-
-        .def("get_rpy", [](raisim::Body &self) {
-            Vec<3> rpy = self.RPY();
-            return convert_vec_to_np(rpy);
-        } , R"mydelimiter(
-        Return the body's orientation as roll-pitch-yaw angles.
-
-        Returns:
-            np.array[float[3]]: roll-pitch-yaw angles.
-        )mydelimiter")
-
-
-        .def("get_rotation_matrix", [](raisim::Body &self) {
-            auto rot = self.rotationMatrix();
-            return convert_mat_to_np(rot);
-        } , R"mydelimiter(
-        Return the body's orientation as a rotation matrix.
-
-        Returns:
-            np.array[float[3, 3]]: rotation matrix.
-        )mydelimiter")
-
-
-        .def("set_collision_orientation", [](raisim::Body &self, py::array_t<double> array) {
-            if (array.size() == 3) {
-                Vec<3> rpy = convert_np_to_vec<3>(array);
-                self.collisionOrientation(rpy);
-            } else if (array.size() == 9) {
-                Mat<3,3> rot = convert_np_to_mat<3,3>(array);
-                self.collisionOrientation(rot);
-            } else {
-                std::ostringstream s;
-                s << "error: expecting the given array to have a size of 3 or 9, but got instead a size of "
-                    << array.size() << ".";
-                throw std::domain_error(s.str());
-            }
-        }, R"mydelimiter(
-        Set the body's collision orientation.
-
-        Args:
-            orientation (np.array[float[3]], np.array[float[3,3]]): orientation (expressed as roll-pitch-yaw angles, or
-                rotation matrix).
-        )mydelimiter",
-        py::arg("orientation"))
-
-
-        .def("set_visualization_orientation", [](raisim::Body &self, py::array_t<double> array) {
-            Vec<3> rpy = convert_np_to_vec<3>(array);
-            self.visOrientation(rpy);
-        }, R"mydelimiter(
-        Set the body's visualization orientation.
-
-        Args:
-            rpy (np.array[float[3]]): orientation (expressed as roll-pitch-yaw angles).
-        )mydelimiter",
-        py::arg("rpy"))
-
-        .def("clear_collision_and_visualization", &raisim::Body::clearColAndVis, "Clear the collision and visualization.")
-
-        .def_readwrite("collision_shapes", &raisim::Body::colshape)
-        .def_readwrite("visualization_shapes", &raisim::Body::visshape)
-        .def_readwrite("visualization_shape_parameters", &raisim::Body::visShapeParam)
-        .def_readwrite("mesh_filenames", &raisim::Body::meshFileNames)
-        .def_readwrite("collision_shape_parameters", &raisim::Body::colShapeParam)
-        .def_readwrite("material_names", &raisim::Body::materialName)
-        .def_readwrite("collision_visualized_materials", &raisim::Body::collisionVisualizedMaterial)
-        .def_readwrite("visualization_names", &raisim::Body::visName)
-        .def_readwrite("collision_names", &raisim::Body::colName)
-        .def_readwrite("collision_mesh_filenames", &raisim::Body::colMeshFileName)
-        .def_readwrite("mass", &raisim::Body::mass_)
-        .def_readwrite("is_colliding", &raisim::Body::isColliding)
-
-        .def_property("combined_collision_position",
-            [](raisim::Body &self) {  // getter
-                return convert_vec_to_np(self.combinedColPos);
-            }, [](raisim::Body &self, py::array_t<double> array) {  // setter
-                auto pos = convert_np_to_vec<3>(array);
-                self.combinedColPos = pos;
-            })
-
-        .def_property("combined_collision_rotation_matrix",
-            [](raisim::Body &self) {  // getter
-                return convert_mat_to_np(self.combinedColRotMat);
-            }, [](raisim::Body &self, py::array_t<double> array) {  // setter
-                Mat<3,3> rot = convert_np_to_mat<3,3>(array);
-                self.combinedColRotMat = rot;
-            })
-
-        .def_property("com",
-            [](raisim::Body &self) {  // getter
-                return convert_vec_to_np(self.com_);
-            }, [](raisim::Body &self, py::array_t<double> array) {  // setter
-                auto pos = convert_np_to_vec<3>(array);
-                self.com_ = pos;
-            })
-
-        .def_property("rpy",
-            [](raisim::Body &self) {  // getter
-                return convert_vec_to_np(self.rollPitchYaw);
-            }, [](raisim::Body &self, py::array_t<double> array) {  // setter
-                auto rpy = convert_np_to_vec<3>(array);
-                self.rollPitchYaw = rpy;
-            })
-
-        .def_property("rotation_matrix",
-            [](raisim::Body &self) {  // getter
-                return convert_mat_to_np(self.rotMat_);
-            }, [](raisim::Body &self, py::array_t<double> array) {  // setter
-                Mat<3,3> rot = convert_np_to_mat<3,3>(array);
-                self.rotMat_ = rot;
-            })
-
-        .def_property("collision_rotation_matrix",
-            [](raisim::Body &self) {  // getter
-                return convert_mat_to_np(self.collisionRotMat_);
-            }, [](raisim::Body &self, py::array_t<double> array) {  // setter
-                Mat<3,3> rot = convert_np_to_mat<3,3>(array);
-                self.collisionRotMat_ = rot;
-            })
-
-        .def_property("inertia",
-            [](raisim::Body &self) {  // getter
-                return convert_mat_to_np(self.inertia_);
-            }, [](raisim::Body &self, py::array_t<double> array) {  // setter
-                Mat<3,3> I = convert_np_to_mat<3,3>(array);
-                self.inertia_ = I;
-            })
-
-        .def_property("collision_object_origin",  // (avoid to use this one as we have to copy everything)
-            [](raisim::Body &self) { // getter
-                py::list list;
-                for (auto elem : self.colObjOrigin)
-                    list.append(convert_vec_to_np(elem));
-                return list;
-            }, [](raisim::Body &self, py::list list) { // setter
-                std::vector<raisim::Vec<3> > vector;
-                for (auto elem : list) {
-                    py::array_t<double> e = elem.cast<py::array_t<double>>();
-                    vector.push_back(convert_np_to_vec<3>(e));
-                }
-                self.colObjOrigin = vector;
-            })
-
-        .def_property("visualization_object_origin",  // (avoid to use this one as we have to copy everything)
-            [](raisim::Body &self) { // getter
-                py::list list;
-                for (auto elem : self.visObjOrigin)
-                    list.append(convert_vec_to_np(elem));
-                return list;
-            }, [](raisim::Body &self, py::list list) { // setter
-                std::vector<raisim::Vec<3> > vector;
-                for (auto elem : list) {
-                    py::array_t<double> e = elem.cast<py::array_t<double>>();
-                    vector.push_back(convert_np_to_vec<3>(e));
-                }
-                self.visObjOrigin = vector;
-            })
-
-        .def_property("visualization_scales",  // (avoid to use this one as we have to copy everything)
-            [](raisim::Body &self) { // getter
-                py::list list;
-                for (auto elem : self.visScale)
-                    list.append(convert_vec_to_np(elem));
-                return list;
-            }, [](raisim::Body &self, py::list list) { // setter
-                std::vector<raisim::Vec<3> > vector;
-                for (auto elem : list) {
-                    py::array_t<double> e = elem.cast<py::array_t<double>>();
-                    vector.push_back(convert_np_to_vec<3>(e));
-                }
-                self.visScale = vector;
-            })
-
-        .def_property("visualization_colors",  // (avoid to use this one as we have to copy everything)
-            [](raisim::Body &self) { // getter
-                py::list list;
-                for (auto elem : self.visColor)
-                    list.append(convert_vec_to_np(elem));
-                return list;
-            }, [](raisim::Body &self, py::list list) { // setter
-                std::vector<raisim::Vec<4> > vector;
-                for (auto elem : list) {
-                    py::array_t<double> e = elem.cast<py::array_t<double>>();
-                    vector.push_back(convert_np_to_vec<4>(e));
-                }
-                self.visColor = vector;
-            })
-
-        .def_property("collision_rotation_matrices",
-            [](raisim::Body &self) { // getter
-                py::list list;
-                for (auto elem : self.collisionRotMat)
-                    list.append(convert_mat_to_np(elem));
-                return list;
-            }, [](raisim::Body &self, py::list list) { // setter
-                std::vector<raisim::Mat<3,3>> vector;
-                for (auto elem : list) {
-                    py::array_t<double> e = elem.cast<py::array_t<double>>();
-                    vector.push_back(convert_np_to_mat<3, 3>(e));
-                }
-                self.collisionRotMat = vector;
-            })
-
-        .def_property("visualization_rotation_matrices",
-            [](raisim::Body &self) { // getter
-                py::list list;
-                for (auto elem : self.visRotMat)
-                    list.append(convert_mat_to_np(elem));
-                return list;
-            }, [](raisim::Body &self, py::list list) { // setter
-                std::vector<raisim::Mat<3,3>> vector;
-                for (auto elem : list) {
-                    py::array_t<double> e = elem.cast<py::array_t<double>>();
-                    vector.push_back(convert_np_to_mat<3, 3>(e));
-                }
-                self.visRotMat = vector;
-            });
-
-
-    /*********/
-    /* Child */
-    /*********/
-    py::class_<raisim::Child>(m, "Child", "Raisim Child class.")
-        .def_readwrite("body_idx", &raisim::Child::bodyIdx)
-        .def_readwrite("parent_idx", &raisim::Child::parentIdx)
-        .def_readwrite("body", &raisim::Child::body)
-        .def_readwrite("joint", &raisim::Child::joint)
-        .def_readwrite("registered", &raisim::Child::registered)
-        .def_readwrite("name", &raisim::Child::name)
-        .def_readwrite("parent_name", &raisim::Child::parentName)
-        .def_readwrite("parent_joint_name", &raisim::Child::parentJointName)
-        .def_readwrite("children", &raisim::Child::child)
-        .def_readwrite("fixed_bodies", &raisim::Child::fixedBodies)
-
-        .def("number_of_bodies_from_here", &raisim::Child::numberOfBodiesFromHere, R"mydelimiter(
-        Get the number of bodies from this child body.
-
-        Returns:
-            int: number of bodies.
-        )mydelimiter")
-
-
-        .def("number_of_dof_from_here", &raisim::Child::numberOfDOFFromHere, R"mydelimiter(
-        Get the number of degrees of freedom from this child body.
-
-        Returns:
-            int: number of bodies.
-        )mydelimiter")
-
-
-        .def("number_of_gc_from_here", &raisim::Child::numberOfGCFromHere, R"mydelimiter(
-        Get the number of generalized coordinates from this child body.
-
-        Returns:
-            int: number of bodies.
-        )mydelimiter")
-
-
-        .def("joint_idx", &raisim::Child::jointIdx, R"mydelimiter(
-        Get the joint index corresponding to the given joint name from a list of joint names.
-
-        Args:
-            name (str): the joint name we want in the given list of joint names.
-            names (list[str]): list of joint names.
-
-        Returns:
-            int: joint index. (-1 if it couldn't find it)
-        )mydelimiter",
-        py::arg("name"), py::arg("names"))
-
-
-        .def("init_visuals", &raisim::Child::initVisuals, R"mydelimiter(
-        Initialize the visual objects.
-
-        Args:
-            objects (list[VisObject]): list of visualization objects.
-        )mydelimiter",
-        py::arg("objects"))
-
-
-        .def("consume_fixed_bodies", &raisim::Child::consumeFixedBodies, R"mydelimiter(
-        Consume the fixed bodies.
-
-        Args:
-            frames (list[CoordinateFrame]): list of coordinate frames that interest us.
-            joint_names (list[str]): list of joint names.
-        )mydelimiter",
-        py::arg("frames"), py::arg("joint_names"));
-
 
 
     /***************************/
@@ -1819,98 +1274,77 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
 
 
-        .def("get_collision_bodies", [](raisim::ArticulatedSystem &self) {
-            return self.getCollisionBodies();
-        }, R"mydelimiter(
-        Return the collision bodies.
-
-        Returns:
-            list[CollisionDefinition]: collision bodies.
-        )mydelimiter")
-        .def("set_collision_bodies", [](raisim::ArticulatedSystem &self, raisim::CollisionSet &list) {
-            // get references to collision bodies
-            std::vector<CollisionDefinition> collisions = self.getCollisionBodies();
-
-            // check list and vector sizes
-            if (list.size() != collisions.size()) {
-                std::ostringstream s;
-                s << "error: expecting the given list to have the same size as the number of collision bodies: "
-                     << list.size() << " != " << collisions.size() << ".";
-                throw std::domain_error(s.str());
-            }
-
-            // copy each element from the list
-            for (size_t i=0; i<list.size(); i++) {
-                collisions[i] = list[i];
-            }
-
-            // update mass info (this is more pythonic)
-            self.updateMassInfo();
-        }, R"mydelimiter(
-        Set the collision bodies.
-
-        Args:
-            collisions (list[CollisionDefinition]): collision bodies.
-        )mydelimiter",
-        py::arg("collisions"))
-
-        .def_property("collision_bodies",
-            [](raisim::ArticulatedSystem &self) {  // getter
-                return self.getCollisionBodies();
-            },
-            [](raisim::ArticulatedSystem &self, py::list list) { // setter
-                // get references to collision bodies
-                std::vector<CollisionDefinition> collisions = self.getCollisionBodies();
-
-                // check list and vector sizes
-                if (list.size() != collisions.size()) {
-                    std::ostringstream s;
-                    s << "error: expecting the given list to have the same size as the number of collision bodies: "
-                         << list.size() << " != " << collisions.size() << ".";
-                    throw std::domain_error(s.str());
-                }
-
-                // copy each element from the list
-                for (size_t i=0; i<list.size(); i++) {
-                    collisions[i] = list[i].cast<CollisionDefinition>();
-                }
-
-                // update mass info (this is more pythonic)
-                self.updateMassInfo();
-            })
-
-
-        .def("get_collision_body", &raisim::ArticulatedSystem::getCollisionBody, R"mydelimiter(
-        Return the collision body associated with the given name.
-
-        Args:
-            name (str): collision body name.
-
-        Returns:
-            CollisionDefinition: collision body.
-        )mydelimiter",
-        py::arg("name"))
-
-        .def("set_collision_body", [](raisim::ArticulatedSystem &self, const std::string& name,
-                CollisionDefinition collision) {
-
-            CollisionDefinition col = self.getCollisionBody(name);
-
-            // copy the values
-            col.rotOffset = collision.rotOffset;
-            col.posOffset = collision.posOffset;
-            col.localIdx = collision.localIdx;
-            col.colObj = collision.colObj;
-            col.name = collision.name;
-        }, R"mydelimiter(
-        Set the collision body to the given name.
-
-        Args:
-            name (str): collision body name.
-            collision (CollisionDefinition): collision definition.
-        )mydelimiter",
-        py::arg("name"), py::arg("collision"))
-
+//        .def("get_collision_bodies", [](raisim::ArticulatedSystem &self) {
+//            return self.getCollisionBodies();
+//        }, R"mydelimiter(
+//        Return the collision bodies.
+//
+//        Returns:
+//            list[CollisionDefinition]: collision bodies.
+//        )mydelimiter")
+//        .def("set_collision_bodies", [](raisim::ArticulatedSystem &self, raisim::CollisionSet &list) {
+//            // get references to collision bodies
+//            std::vector<CollisionDefinition> collisions = self.getCollisionBodies();
+//
+//            // check list and vector sizes
+//            if (list.size() != collisions.size()) {
+//                std::ostringstream s;
+//                s << "error: expecting the given list to have the same size as the number of collision bodies: "
+//                     << list.size() << " != " << collisions.size() << ".";
+//                throw std::domain_error(s.str());
+//            }
+//
+//            // copy each element from the list
+//            for (size_t i=0; i<list.size(); i++) {
+//                collisions[i] = list[i];
+//            }
+//
+//            // update mass info (this is more pythonic)
+//            self.updateMassInfo();
+//        }, R"mydelimiter(
+//        Set the collision bodies.
+//
+//        Args:
+//            collisions (list[CollisionDefinition]): collision bodies.
+//        )mydelimiter",
+//        py::arg("collisions"))
+//
+//        .def_property("collision_bodies",
+//            [](raisim::ArticulatedSystem &self) {  // getter
+//                return self.getCollisionBodies();
+//            },
+//            [](raisim::ArticulatedSystem &self, py::list list) { // setter
+//                // get references to collision bodies
+//                std::vector<CollisionDefinition> collisions = self.getCollisionBodies();
+//
+//                // check list and vector sizes
+//                if (list.size() != collisions.size()) {
+//                    std::ostringstream s;
+//                    s << "error: expecting the given list to have the same size as the number of collision bodies: "
+//                         << list.size() << " != " << collisions.size() << ".";
+//                    throw std::domain_error(s.str());
+//                }
+//
+//                // copy each element from the list
+//                for (size_t i=0; i<list.size(); i++) {
+//                    collisions[i] = list[i].cast<CollisionDefinition>();
+//                }
+//
+//                // update mass info (this is more pythonic)
+//                self.updateMassInfo();
+//            })
+//
+//
+//        .def("get_collision_body", &raisim::ArticulatedSystem::getCollisionBody, R"mydelimiter(
+//        Return the collision body associated with the given name.
+//
+//        Args:
+//            name (str): collision body name.
+//
+//        Returns:
+//            CollisionDefinition: collision body.
+//        )mydelimiter",
+//        py::arg("name"))
 
 
         // this is automatically done when you use properties so you don't have to call it (more pythonic)
