@@ -265,7 +265,9 @@ void init_world(py::module &m) {
 	    py::return_value_policy::reference_internal)
 
 
-        .def("add_articulated_system", &raisim::World::addArticulatedSystem, R"mydelimiter(
+        .def("add_articulated_system", py::overload_cast<const std::string &, const std::string &,
+            const std::vector<std::string> &, CollisionGroup, CollisionGroup,
+            ArticulatedSystemOption>(&raisim::World::addArticulatedSystem), R"mydelimiter(
 	    Add an articulated system in the world.
 
 	    Args:
