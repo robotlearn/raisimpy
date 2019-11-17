@@ -314,7 +314,7 @@ void init_world(py::module &m) {
 
         .def("add_mesh", [](raisim::World &self, const std::string & file_name,
                                 double mass, py::array_t<double> inertia, py::array_t<double> com,
-                                const std::string & material = "default", CollisionGroup group=1,
+                                double scale=1., const std::string & material = "default", CollisionGroup group=1,
                                 CollisionGroup mask = CollisionGroup(-1)) {
                // convert np.array to raisim matrices
                Mat<3, 3> I;
@@ -323,7 +323,7 @@ void init_world(py::module &m) {
                COM = convert_np_to_vec<3>(com);
 
                // return compound object
-               return self.addMesh(file_name, mass, I, COM, material, group, mask);
+               return self.addMesh(file_name, mass, I, COM, scale, material, group, mask);
              }, R"mydelimiter(
 	    Add a mesh in the world.
 
@@ -339,7 +339,7 @@ void init_world(py::module &m) {
 	    Returns:
 	        Mesh: the mesh instance.
 	    )mydelimiter",
-             py::arg("file_name"), py::arg("mass"), py::arg("inertia"), py::arg("com"), py::arg("material") = "default",
+             py::arg("file_name"), py::arg("mass"), py::arg("inertia"), py::arg("com"), py::arg("scale") = 1., py::arg("material") = "default",
              py::arg("collision_group") = 1, py::arg("collision_mask") = CollisionGroup(-1),
              py::return_value_policy::reference_internal)
 
