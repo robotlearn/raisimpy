@@ -540,7 +540,7 @@ void init_visualizer(py::module &m) {
             Returns:
                 Light: Light instance.
             )mydelimiter",
-//            py::return_value_policy::reference_internal)
+           py::arg("index")="default",
            py::return_value_policy::reference)
 
       .def("get_light_node", &raisim::OgreVis::getLightNode, R"mydelimiter(
