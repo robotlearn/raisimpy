@@ -85,7 +85,7 @@ void init_single_bodies(py::module &m) {
 	    .def(py::init<raisim::ObjectType>(), "Initialize the Object.", py::arg("object_type"))
 
 
-        .def("get_quaternion", py::overload_cast<>(&raisim::SingleBodyObject::getQuaternion), R"mydelimiter(
+        .def("get_quaternion", py::overload_cast<>(&raisim::SingleBodyObject::getQuaternion, py::const_), R"mydelimiter(
 	    Get the body's orientation (expressed as a quaternion [w,x,y,z]) with respect to the world frame.
 
 	    Returns:
@@ -93,7 +93,7 @@ void init_single_bodies(py::module &m) {
 	    )mydelimiter")
 
 
-	    .def("get_rotation_matrix", py::overload_cast<>(&raisim::SingleBodyObject::getRotationMatrix), R"mydelimiter(
+	    .def("get_rotation_matrix", py::overload_cast<>(&raisim::SingleBodyObject::getRotationMatrix, py::const_), R"mydelimiter(
 	    Get the body's orientation (expressed as a rotation matrix) with respect to the world frame.
 
 	    Returns:
@@ -101,7 +101,7 @@ void init_single_bodies(py::module &m) {
 	    )mydelimiter")
 
 
-	    .def("get_position", py::overload_cast<>(&raisim::SingleBodyObject::getPosition), R"mydelimiter(
+	    .def("get_position", py::overload_cast<>(&raisim::SingleBodyObject::getPosition, py::const_), R"mydelimiter(
 	    Get the body's position with respect to the world frame.
 
 	    Returns:
@@ -117,7 +117,7 @@ void init_single_bodies(py::module &m) {
 	    )mydelimiter")
 
 
-	    .def("get_linear_velocity", py::overload_cast<>(&raisim::SingleBodyObject::getLinearVelocity), R"mydelimiter(
+	    .def("get_linear_velocity", py::overload_cast<>(&raisim::SingleBodyObject::getLinearVelocity, py::const_), R"mydelimiter(
 	    Get the body's linear velocity with respect to the world frame.
 
 	    Returns:
@@ -125,31 +125,12 @@ void init_single_bodies(py::module &m) {
 	    )mydelimiter")
 
 
-	    .def("get_angular_velocity", py::overload_cast<>(&raisim::SingleBodyObject::getAngularVelocity), R"mydelimiter(
+	    .def("get_angular_velocity", py::overload_cast<>(&raisim::SingleBodyObject::getAngularVelocity, py::const_), R"mydelimiter(
 	    Get the body's angular velocity position with respect to the world frame.
 
 	    Returns:
 	        np.array[float[3]]: angular velocity in the world frame.
 	    )mydelimiter")
-
-
-        // this is the same as get_position
-        .def("get_world_position", py::overload_cast<>(&raisim::SingleBodyObject::getPosition), R"mydelimiter(
-	    Get the body's position with respect to the world frame.
-
-	    Returns:
-	        np.array[float[3]]: position in the world frame.
-	    )mydelimiter")
-
-
-	    // this is the same as get_rotation_matrix
-	    .def("get_world_rotation_matrix", py::overload_cast<>(&raisim::SingleBodyObject::getRotationMatrix), R"mydelimiter(
-	    Get the body's orientation (expressed as a rotation matrix) with respect to the world frame.
-
-	    Returns:
-	        np.array[float[3,3]]: rotation matrix.
-	    )mydelimiter")
-
 
 	    .def("get_kinetic_energy", &raisim::SingleBodyObject::getKineticEnergy, R"mydelimiter(
 	    Get the body's kinetic energy.

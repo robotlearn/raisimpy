@@ -170,15 +170,6 @@ void init_terrain(py::module &m) {
 	    py::arg("x_samples"), py::arg("y_samples"), py::arg("x_scale"), py::arg("y_scale"), py::arg("x_center"),
 	    py::arg("y_center"))
 
-
-        .def("get_height_map", &raisim::HeightMap::getHeightMap, R"mydelimiter(
-	    Get the height map.
-
-	    Returns:
-	        list[float]: height map.
-	    )mydelimiter")
-
-
 	    .def("get_height", &raisim::HeightMap::getHeight, R"mydelimiter(
 	    Get the height at the given location.
 

@@ -865,7 +865,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
         .def("get_dense_rotational_jacobian", [](raisim::ArticulatedSystem &self, size_t body_idx) {
             size_t n = self.getGeneralizedCoordinateDim();
             Eigen::MatrixXd jac = Eigen::MatrixXd::Zero(3, n);
-            self.getDenseOrientationalJacobian(body_idx, jac);
+            self.getDenseRotationalJacobian(body_idx, jac);
             return jac;
         }, R"mydelimiter(
         Get the dense rotational jacobian.
@@ -1352,7 +1352,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
             "Update the mass information. This function must be called after we change the dynamic parameters.")
 
 
-        .def("get_mass", py::overload_cast<size_t>(&raisim::ArticulatedSystem::getMass), R"mydelimiter(
+        .def("get_mass", py::overload_cast<size_t>(&raisim::ArticulatedSystem::getMass, py::const_), R"mydelimiter(
         Get the mass of the link.
 
         Args:
@@ -1361,7 +1361,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
         Returns:
             float: mass value.
         )mydelimiter",
-        py::arg("link_idx"))
+        py::arg("localIdx"))
 
         .def("set_mass", &raisim::ArticulatedSystem::setMass, R"mydelimiter(
         Set the mass of the link.

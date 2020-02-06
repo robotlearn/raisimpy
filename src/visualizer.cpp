@@ -38,7 +38,7 @@
 
 // include Raisim Ogre related headers
 #include "raisim/math.hpp"   // contains the definitions of Vec, Mat, etc.
-#include "raisim/interfaceClasses.hpp"
+#include "raisim/interfaces.hpp"
 #include "raisim/OgreVis.hpp"
 //#include "visualizer/helper.hpp"
 #include "visualizer/guiState.hpp"
