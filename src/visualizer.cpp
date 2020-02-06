@@ -550,6 +550,7 @@ void init_visualizer(py::module &m) {
                 SceneNode: Light node instance.
             )mydelimiter",
 //            py::return_value_policy::reference_internal)
+           py::arg("index")="default",
            py::return_value_policy::reference)
 
       .def("get_view_port", &raisim::OgreVis::getViewPort, R"mydelimiter(
