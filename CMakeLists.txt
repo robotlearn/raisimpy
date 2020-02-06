@@ -3,6 +3,7 @@
 
 cmake_minimum_required(VERSION 2.8.9)
 project (raisim_wrapper)
+set(CMAKE_CXX_STANDARD 14)
 
 # find the various packages
 find_package(pybind11 CONFIG 2.3 REQUIRED)
