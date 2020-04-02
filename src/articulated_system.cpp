@@ -1381,9 +1381,10 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
         )mydelimiter")
 
 
-        .def("set_external_force", [](raisim::ArticulatedSystem &self, size_t local_idx, py::array_t<double> force) {
+        .def("set_external_force", [](raisim::ArticulatedSystem &self, size_t local_idx, py::array_t<double> pos, py::array_t<double> force) {
 	        Vec<3> f = convert_np_to_vec<3>(force);
-	        self.setExternalForce(local_idx, f);
+            Vec<3> p = convert_np_to_vec<3>(pos);
+	        self.setExternalForce(local_idx, p, f);
 	    }, R"mydelimiter(
 	    Set the external force on the body.
 
@@ -1391,7 +1392,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 	        local_idx (int): local/link index.
 	        force (np.array[float[3]]): force vector.
 	    )mydelimiter",
-	    py::arg("local_idx"), py::arg("force"))
+	    py::arg("local_idx"), py::arg("pos"), py::arg("force"))
 
 
 	    .def("set_external_torque", [](raisim::ArticulatedSystem &self, size_t local_idx, py::array_t<double> torque) {

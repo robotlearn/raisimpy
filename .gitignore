@@ -47,3 +47,4 @@ data/
 # egg
 *egg-info/
 
+/.project
