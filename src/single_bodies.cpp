@@ -331,10 +331,11 @@ void init_single_bodies(py::module &m) {
 	    py::arg("dx"), py::arg("dy"), py::arg("dz"), py::arg("wx"), py::arg("wy"), py::arg("wz"))
 
 
-        .def("set_external_force", [](raisim::SingleBodyObject &self, size_t local_idx, py::array_t<double> force) {
+        .def("set_external_force", [](raisim::SingleBodyObject &self, size_t local_idx, py::array_t<double> pos, py::array_t<double> force) {
 	        // convert np.array[3] to Vec<3>
-	        Vec<3> f = convert_np_to_vec<3>(force);
-	        self.setExternalForce(local_idx, f);
+	        Vec<3> p = convert_np_to_vec<3>(pos);
+			Vec<3> f = convert_np_to_vec<3>(force);
+	        self.setExternalForce(local_idx, p, f);
 	    }, R"mydelimiter(
 	    Set the external force on the body.
 
@@ -342,7 +343,7 @@ void init_single_bodies(py::module &m) {
 	        local_idx (int): local index.
 	        force (np.array[float[3]]): force vector.
 	    )mydelimiter",
-	    py::arg("local_idx"), py::arg("force"))
+	    py::arg("local_idx"), py::arg("pos"), py::arg("force"))
 
 
 	    .def("set_external_torque", [](raisim::SingleBodyObject &self, size_t local_idx, py::array_t<double> torque) {
