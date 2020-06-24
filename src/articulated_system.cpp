@@ -842,7 +842,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
 
         .def("get_dense_linear_jacobian", [](raisim::ArticulatedSystem &self, size_t body_idx, py::array_t<double> point) {
-            size_t n = self.getGeneralizedCoordinateDim();
+            size_t n = self.getDOF();
             Eigen::MatrixXd jac = Eigen::MatrixXd::Zero(3, n);
             Vec<3> pos = convert_np_to_vec<3>(point);
             self.getDenseJacobian(body_idx, pos, jac);
@@ -863,7 +863,7 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
 
 
         .def("get_dense_rotational_jacobian", [](raisim::ArticulatedSystem &self, size_t body_idx) {
-            size_t n = self.getGeneralizedCoordinateDim();
+            size_t n = self.getDOF();
             Eigen::MatrixXd jac = Eigen::MatrixXd::Zero(3, n);
             self.getDenseRotationalJacobian(body_idx, jac);
             return jac;
@@ -935,49 +935,37 @@ void init_articulated_system(py::module &m) { // py::module &main_module) {
         )mydelimiter")
 
 
-        .def("get_body_pose", [](raisim::ArticulatedSystem &self, size_t body_id) {
-            Vec<3> pos;
-            Mat<3,3> rot;
-            self.getBodyPose(body_id, rot, pos);
-
-            Vec<4> quat;
-            rotMatToQuat(rot, quat);
-
-            auto position = convert_vec_to_np(pos);
-            auto orientation = convert_vec_to_np(quat);
-            return position, orientation;
-        }, R"mydelimiter(
-        Return the body pose (position and orientation (expressed as a quaternion)).
+        .def("get_body_position", [](raisim::ArticulatedSystem &self, size_t body_id) {
+               Vec<3> pos;
+               self.getBodyPosition(body_id, pos);
+               auto pos_np = convert_vec_to_np(pos);
+               return pos_np;
+               }, R"mydelimiter(
+        Return the body position.
 
         Args:
             body_id (int): body id.
-
         Returns:
             np.array[float[3]]: body position.
-            np.array[float[4]]: body orientation (expressed as a quaternion [w,x,y,z])
+
         )mydelimiter",
         py::arg("body_id"))
 
-
-        .def("get_body_pose1", [](raisim::ArticulatedSystem &self, size_t body_id) {
-            Vec<3> pos;
-            Mat<3,3> rot;
-            self.getBodyPose(body_id, rot, pos);
-            auto position = convert_vec_to_np(pos);
-            auto orientation = convert_mat_to_np(rot);
-            return position, orientation;
-        }, R"mydelimiter(
-        Return the body pose (position and orientation (expressed as a rotation matrix)).
+        .def("get_body_orientation", [](raisim::ArticulatedSystem &self, size_t body_id) {
+               Mat<3,3> ori;
+               self.getBodyOrientation(body_id, ori);
+               auto ori_np = convert_mat_to_np(ori);
+               return ori_np;
+             }, R"mydelimiter(
+        Return the body orientation.
 
         Args:
             body_id (int): body id.
-
         Returns:
-            np.array[float[3]]: body position.
-            np.array[float[3,3]]: body orientation (expressed as a rotation matrix)
-        )mydelimiter",
-        py::arg("body_id"))
+            np.array[float[3,3]]: body orientation.
 
+        )mydelimiter",
+             py::arg("body_id"))
 
         /* The following 5 methods can be used to directly modify dynamic/kinematic properties of the robot.
          They are made for dynamic randomization. Use them with caution since they will change the
